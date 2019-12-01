@@ -33,6 +33,7 @@ bp = Blueprint("mul", __name__, url_prefix="/user")
 work_flag=1
 travel_flag=1
 a=1
+cn=2
 #并发执行
 def oneday():#flask会运行运行的那个文件中所有被import到的有路由的整个py文件
     global work_flag,travel_flag
