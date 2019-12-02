@@ -2,8 +2,9 @@
 
 import os
 import sys
-###branchcn
-###write by yzy
+### branchcn
+### write by yzy
+# welcome
 from flask import Flask
 
 from calculate.cal import bp
@@ -13,7 +14,7 @@ sys.path.append(file_dir)
 if __name__ == '__main__':
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.urandom(24)
-    app.config['JSON_AS_ASCII']=False
+    app.config['JSON_AS_ASCII'] = False
     app.register_blueprint(bp)
-    app.run(host='::',port=5000)#联机操作
+    app.run(host='::', port=5000)  #联机操作
     app.run()
