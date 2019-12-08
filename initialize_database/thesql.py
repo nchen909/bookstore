@@ -84,7 +84,7 @@ def dbselect():
     # for auser in users:
     #     print(f"id：{auser.id},username：{auser.username},password={auser.password},email={auser.email}")
     users = session.execute("SELECT count(password) FROM users").fetchall()#能找到对象
-    print(type(users[0]))
+    print(users[0])
     # for auser in users:
     #     print(f"id：{auser.count(password)},username：{auser.username},password={auser.password},email={auser.email}")
 
