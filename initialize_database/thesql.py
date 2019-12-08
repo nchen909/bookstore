@@ -75,7 +75,7 @@ def dbchange():
     session.add(a)
 def dbdelete():
     #######################删
-    a = session.query(User).get(1)#查
+    a = session.query(User).get(1)#删
     session.delete(a)
 def dbselect():
 ########################直接命令行
