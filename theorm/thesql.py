@@ -8,7 +8,7 @@ import psycopg2
 Base = declarative_base()
 # 初始化数据库连接
 # engine = create_engine('postgresql://postgres:1@localhost:5432/postgres')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432gres')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/postgres')
 # 创建DBSession
 DBSession = sessionmaker(bind=engine)  # 建立起会话 手机（bind=自己的手机号（mysql号））
 # 创建session对象：
