@@ -141,7 +141,7 @@ Status Code:
 
 #### URL
 
-POST http://[address]/seller/add_stock_level
+POST http://[address]/seller/add_book
 
 #### Request
 Headers:
@@ -172,7 +172,6 @@ add_stock_level | int | 增加的库存量 | N
 Status Code:
 
 码 | 描述
---- | :--
+--- | ---
 200 | 创建商铺成功
-5XX | 商铺ID不存在 
-5XX | 图书ID不存在 
+5XX | 商铺ID已存在
