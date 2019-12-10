@@ -32,6 +32,7 @@ class BookDB:
     def __init__(self, large: bool = False):
         parent_path = os.path.dirname(os.path.dirname(__file__))
         self.db_s = os.path.join(parent_path, "data/book.db")
+
         self.db_l = os.path.join(parent_path, "data/book_lx.db")
         if large:
             self.book_db = self.db_l
@@ -48,6 +49,7 @@ class BookDB:
     def get_book_info(self, start, size) -> [Book]:
         books = []
         conn = sqlite.connect(self.book_db)
+        print(self.book_db)
         cursor = conn.execute(
             "SELECT id, title, author, "
             "publisher, original_title, "

@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint
+from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint,Text
 from sqlalchemy.orm import sessionmaker
 import psycopg2
 # 连接数据库legend 记得修改这个！！！
@@ -11,18 +11,18 @@ Base = declarative_base()
 # 用户表
 class User(Base):
     __tablename__ = 'user'
-    user_id = Column(String(16), primary_key=True)
-    password = Column(String(16), nullable=False)
+    user_id = Column(String(64), primary_key=True)
+    password = Column(String(64), nullable=False)
     balance = Column(Integer, nullable=False)
-    token = Column(String(64), nullable=False)
-    terminal = Column(String(64), nullable=False)
+    token = Column(String(400))
+    terminal = Column(String(64))
 
 # 商店表（含书本信息）
 class Store(Base):
     __tablename__ = 'store'
-    store_id = Column(String(16), nullable=False)
-    book_id = Column(String(16), nullable=False)
-    book_info = Column(String(128), nullable=False)
+    store_id = Column(String(64), nullable=False)
+    book_id = Column(String(64), nullable=False)
+    book_info = Column(Text, nullable=False)
     stock_level = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
     __table_args__ = (
@@ -33,8 +33,8 @@ class Store(Base):
 # 用户商店关系表
 class User_store(Base):
     __tablename__ = 'user_store'
-    user_id = Column(String(16), ForeignKey('user.user_id'), nullable=False)
-    store_id = Column(String(16), nullable=False)
+    user_id = Column(String(64), ForeignKey('user.user_id'), nullable=False)
+    store_id = Column(String(64), nullable=False)
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'store_id'),
         {},
