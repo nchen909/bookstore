@@ -10,7 +10,7 @@ Base = declarative_base()
 # String长度可能需要做修改
 # 用户表
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'usr'
     user_id = Column(String(16), primary_key=True)
     password = Column(String(16), nullable=False)
     balance = Column(Integer, nullable=False)

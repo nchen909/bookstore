@@ -22,4 +22,5 @@
    python ./be/app.py
    ```
 7. 请确保修改之前能运行脚本
+8. 原来的user表改为usr
 
