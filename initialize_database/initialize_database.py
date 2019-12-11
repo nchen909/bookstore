@@ -54,6 +54,7 @@ class New_order_pend(Base):
     buyer_id = Column(String(16), ForeignKey('user.user_id'), nullable=False)
     seller_id = Column(String(16), ForeignKey('user.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
+    pt = Column(Time, nullable=False)
 
 
 # 已取消订单
@@ -72,7 +73,7 @@ class New_order_paid(Base):
     buyer_id = Column(String(16), ForeignKey('user.user_id'), nullable=False)
     seller_id = Column(String(16), ForeignKey('user.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    status = Column(String(32), nullable=False)
+    status = Column(Boolean, nullable=False) # 0为已发货，1为已收获
 
 
 # 订单中的书本信息
