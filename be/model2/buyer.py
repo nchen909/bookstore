@@ -69,6 +69,7 @@ class Buyer():
             return code, mes, order_id
         order_id = user_id + str(uuid.uuid1())
         book_list = []
+        
         for book_id, count in id_and_count:
             book = self.session.execute(
                 "SELECT stock_level,price FROM store WHERE store_id = '%s' AND book_id = '%s';" % (
