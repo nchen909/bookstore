@@ -1,12 +1,17 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint,Text,TIMESTAMP
+from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint, Text, DateTime, Boolean
 from sqlalchemy.orm import sessionmaker
+
 import psycopg2
+from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+engine = create_engine(
+    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore'
+)
 
 Base = declarative_base()
+
 # String长度可能需要做修改
 # 用户表
 class User(Base):
@@ -14,8 +19,9 @@ class User(Base):
     user_id = Column(String(64), primary_key=True)
     password = Column(String(64), nullable=False)
     balance = Column(Integer, nullable=False)
-    token = Column(String(400))
+    token = Column(String(512))
     terminal = Column(String(64))
+
 
 # 商店表（含书本信息）
 class Store(Base):
@@ -30,6 +36,7 @@ class Store(Base):
         {},
     )
 
+
 # 用户商店关系表
 class User_store(Base):
     __tablename__ = 'user_store'
@@ -40,6 +47,7 @@ class User_store(Base):
         {},
     )
 
+
 # 未付款订单
 class New_order_pend(Base):
     __tablename__ = 'new_order_pend'
@@ -47,7 +55,8 @@ class New_order_pend(Base):
     buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    pt=Column(TIMESTAMP, nullable=False)
+    pt = Column(DateTime, nullable=False)
+
 
 # 已取消订单
 class New_order_cancel(Base):
@@ -56,6 +65,7 @@ class New_order_cancel(Base):
     buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
+    pt = Column(DateTime, nullable=False)
 
 # 已付款订单
 class New_order_paid(Base):
@@ -64,7 +74,9 @@ class New_order_paid(Base):
     buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    status = Column(String(32), nullable=False)
+    pt = Column(DateTime, nullable=False)
+    status = Column(Boolean, nullable=False) # 0为已发货，1为已收获
+
 
 # 订单中的书本信息
 class New_order_detail(Base):
@@ -92,43 +104,53 @@ def add_info():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     # 提交即保存到数据库A
-    A = User(user_id = 'A',
+    A = User(user_id = '王掌柜',
             password = '123456',
             balance = 100,
-            token = 'AAA',
-            terminal = 'AAA')
-    B = User(user_id = 'B',
+            token = '***',
+            terminal = 'Edge')
+    B = User(user_id = '小明',
             password = '123456',
             balance = 500,
-            token = 'BBB',
-            terminal='BBB')
-    StoreA = Store(store_id = 'StoreA',
-                    book_id = 'BookA',
-                    book_info='A nice book.',
+            token = '***',
+            terminal='Chrome')
+    StoreA = Store(store_id = '王掌柜的书店',
+                    book_id = '数据结构',
+                    book_info='本科生必修',
                     stock_level=10,
-                    price=10)
-    StoreB = Store(store_id = 'StoreB',
-                    book_id = 'BookA',
-                    book_info='A nice book.',
+                    price=1000) # 价格单位是分
+    StoreB = Store(store_id = '王掌柜的进口书店',
+                    book_id = 'PRML',
+                    book_info='机器学习必读书本',
                     stock_level=10,
-                    price=10)
-    session.add_all([A, B ,StoreA])
+                    price=10000)
+    session.add_all([A, B, StoreA, StoreB])
     session.commit()
-    A_Store1 = User_store(user_id = 'A',
-                        store_id = 'StoreA')
-    A_Store2 = User_store(user_id = 'A',
-                        store_id = 'StoreB')
+    A_Store1 = User_store(user_id = '王掌柜',
+                        store_id = '王掌柜的书店')
+    A_Store2 = User_store(user_id = '王掌柜',
+                        store_id = '王掌柜的进口书店')
     OrderA = New_order_paid(order_id = 'order1',
-                            buyer_id = 'B',
-                            seller_id = 'A',
-                            price = 20,
-                            status = 'Already evaluated')  # 或者Send goods 或者Received goods
+                            buyer_id = '小明',
+                            seller_id = '王掌柜',
+                            price=2000,
+                            pt = datetime.now(),
+                            status = 0)  # 0为已发货，1为已收获
     Order_detailA = New_order_detail(order_id = 'order1',
-                                    book_id = 'BookA',
+                                    book_id = '数据结构',
                                     count = 2,
-                                    price = 20)
+                                    price = 2000)
+    OrderB = New_order_pend(order_id = 'order2',
+                            buyer_id = '小明',
+                            seller_id = '王掌柜',
+                            price = 10000,
+                            pt = datetime.now())
+    Order_detailB = New_order_detail(order_id = 'order2',
+                                    book_id = 'PRML',
+                                    count = 1,
+                                    price = 10000)
     session.add_all([
-        A_Store1, A_Store2, OrderA, Order_detailA
+        A_Store1, A_Store2, OrderA, Order_detailA, OrderB, Order_detailB
     ])
     session.commit()
     # 关闭session
@@ -138,4 +160,4 @@ if __name__ == "__main__":
     # 创建数据库
     init()
     # 加入信息
-    #add_info()
+    add_info()
