@@ -11,8 +11,8 @@ Base = declarative_base()
 # 用户表
 class User(Base):
     __tablename__ = 'usr'
-    user_id = Column(String(64), primary_key=True)
-    password = Column(String(64), nullable=False)
+    user_id = Column(String(128), primary_key=True)
+    password = Column(String(128), nullable=False)
     balance = Column(Integer, nullable=False)
     token = Column(String(400))
     terminal = Column(String(64))
@@ -20,7 +20,7 @@ class User(Base):
 # 商店表（含书本信息）
 class Store(Base):
     __tablename__ = 'store'
-    store_id = Column(String(64), nullable=False)
+    store_id = Column(String(128), nullable=False)
     book_id = Column(String(64), nullable=False)
     book_info = Column(Text, nullable=False)
     stock_level = Column(Integer, nullable=False)
@@ -33,8 +33,8 @@ class Store(Base):
 # 用户商店关系表
 class User_store(Base):
     __tablename__ = 'user_store'
-    user_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
-    store_id = Column(String(64), nullable=False)
+    user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    store_id = Column(String(128), nullable=False)
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'store_id'),
         {},
@@ -44,8 +44,8 @@ class User_store(Base):
 class New_order_pend(Base):
     __tablename__ = 'new_order_pend'
     order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
     pt=Column(TIMESTAMP, nullable=False)
 
@@ -53,18 +53,18 @@ class New_order_pend(Base):
 class New_order_cancel(Base):
     __tablename__ = 'new_order_cancel'
     order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
 
 # 已付款订单
 class New_order_paid(Base):
     __tablename__ = 'new_order_paid'
     order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(64), ForeignKey('usr.user_id'), nullable=False)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    status = Column(String(32), nullable=False)
+    status = Column(Integer, nullable=False)
 
 # 订单中的书本信息
 class New_order_detail(Base):

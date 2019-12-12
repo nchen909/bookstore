@@ -43,4 +43,4 @@ def be_run():
     app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
     app.register_blueprint(buyer.bp_buyer)
-    app.run()
+    app.run(threaded=True)

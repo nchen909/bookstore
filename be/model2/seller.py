@@ -43,7 +43,7 @@ class Seller():
 
     # 测试是否存在book
     def check_book(self,book_id):
-        book_id = self.session.execute("SELECT book_id FROM user_store WHERE book_id = '%s';"% (book_id,)).fetchone()
+        book_id = self.session.execute("SELECT book_id FROM store WHERE book_id = '%s';"% (book_id,)).fetchone()
         if book_id is None:
             return False
         else:
@@ -65,7 +65,7 @@ class Seller():
                 return error.error_non_exist_user_id(user_id)
             if not self.check_store(store_id):
                  return error.error_non_exist_store_id(store_id)
-            self.session.execute("INSERT into store(store_id, book_id, book_info, stock_level,price) VALUES ('%s', '%s', '%s', %d,%d)"% (store_id, book_id, book_json_str, stock_level,price))
+            self.session.execute("INSERT into store(store_id, book_id, book_info, stock_level,price) VALUES ('%s', '%s', :book_info, %d,%d)"% (store_id, book_id, stock_level,price),{'book_info':book_json_str})
             self.session.commit()
         except sqlalchemy.exc.IntegrityError:
             return error.error_exist_book_id(book_id)
@@ -80,5 +80,6 @@ class Seller():
         if not self.check_book(book_id):
             return error.error_non_exist_book_id(book_id)
         self.session.execute("UPDATE store SET stock_level = stock_level + %d "
-                          "WHERE store_id = '%s' AND book_id = '%s'", (add_stock_level, store_id, book_id))
+                          "WHERE store_id = '%s' AND book_id = '%s'"% (add_stock_level, store_id, book_id))
         self.session.commit()
+        return 200, "ok"
