@@ -1,3 +1,11 @@
+
+import sys
+import os
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+rootPath2 = os.path.split(rootPath)[0]
+sys.path.append(rootPath2)
+
 from fe.bench.workload import Workload
 from fe.bench.session import Session
 
