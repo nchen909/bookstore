@@ -43,7 +43,7 @@ class Seller():
 
     # 测试是否存在book
     def check_book(self,book_id):
-        book_id = self.session.execute("SELECT book_id FROM store WHERE book_id = '%s';"% (book_id,)).fetchone()
+        book_id = self.session.execute("SELECT book_id FROM store WHERE book_id = %d;"% (int(book_id),)).fetchone()
         if book_id is None:
             return False
         else:
@@ -65,10 +65,11 @@ class Seller():
                 return error.error_non_exist_user_id(user_id)
             if not self.check_store(store_id):
                  return error.error_non_exist_store_id(store_id)
-            self.session.execute("INSERT into store(store_id, book_id, book_info, stock_level,price) VALUES ('%s', '%s', :book_info, %d,%d)"% (store_id, book_id, stock_level,price),{'book_info':book_json_str})
+            book_id=int(book_id)
+            self.session.execute("INSERT into store(store_id, book_id, stock_level,price) VALUES ('%s', %d,  %d,%d)"% (store_id, int(book_id), stock_level,price))
             self.session.commit()
         except sqlalchemy.exc.IntegrityError:
-            return error.error_exist_book_id(book_id)
+            return error.error_exist_book_id(str(book_id))
         return 200, "ok"
 
     def add_stock_level(self, user_id: str, store_id: str, book_id: str, add_stock_level: int):
@@ -80,6 +81,21 @@ class Seller():
         if not self.check_book(book_id):
             return error.error_non_exist_book_id(book_id)
         self.session.execute("UPDATE store SET stock_level = stock_level + %d "
-                          "WHERE store_id = '%s' AND book_id = '%s'"% (add_stock_level, store_id, book_id))
+                          "WHERE store_id = '%s' AND book_id = %d"% (add_stock_level, store_id, int(book_id)))
         self.session.commit()
         return 200, "ok"
+
+    def send_books(self,seller_id,order_id):
+        row = self.session.execute(
+            "SELECT status,seller_id FROM new_order_paid WHERE order_id = '%s'" % (order_id,)).fetchone()
+        if row is None:
+            return error.error_invalid_order_id(order_id)
+        if row[0]!=0:
+            return 521,'books has been sent to costumer'
+        if row[1]!=seller_id:
+            return error.error_authorization_fail()
+        self.session.execute(
+            "UPDATE new_order_paid set status=1 where order_id = '%s' ;" % ( order_id))
+        self.session.commit()
+        return  200, "ok"
+

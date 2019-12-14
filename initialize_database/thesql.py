@@ -1,96 +1,140 @@
-from sqlalchemy import Column,String,Integer,ForeignKey,create_engine,PrimaryKeyConstraint
-from sqlalchemy.orm import  sessionmaker,relationship
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import  create_engine
+from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint,Text,TIMESTAMP
+from sqlalchemy.orm import sessionmaker
 import psycopg2
+# 连接数据库legend 记得修改这个！！！
+engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
 
-# 创建对象的基类
 Base = declarative_base()
-# 初始化数据库连接
-# engine = create_engine('postgresql://postgres:1@localhost:5432/postgres')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/postgres')
-# 创建DBSession
-DBSession = sessionmaker(bind=engine)  # 建立起会话 手机（bind=自己的手机号（mysql号））
-# 创建session对象：
-session = DBSession()  # 用该手机拨打电话（）
-#declare a mapping
-#定义User对象
+# String长度可能需要做修改
+# 用户表
 class User(Base):
+    __tablename__ = 'usr'
+    user_id = Column(String(128), primary_key=True)
+    password = Column(String(128), nullable=False)
+    balance = Column(Integer, nullable=False)
+    token = Column(String(400))
+    terminal = Column(String(64))
 
-    __tablename__ = 'users'
-    id = Column(Integer,primary_key=True)
-    username = Column(String(64), nullable=False, index=True)
-    password = Column(String(64), nullable=False)
-    email = Column(String(64), nullable=False, index=True)
-    books = relationship('Book',backref='author')#一本书对一用户 一用户对多本书 （书指用户写的书）
-    #如果是一对一 加上uselist=False
-    #relationship:存在关系，但是该关系在user中不存在 其为ForeignKey服务 也就是说
-    #当你插入
-    #外键对连表查询有一定的优化，那就是relationship字段，其配合外键一起使用 查询时不需要分两步走（先定位到两张表都有的属性 再查领一张表） 一步上天
+# 商店表（含书本信息）
+class Store(Base):
+    __tablename__ = 'store'
+    store_id = Column(String(128), nullable=False)
+    book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False)
+    stock_level = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
+    __table_args__ = (
+        PrimaryKeyConstraint('store_id', 'book_id'),
+        {},
+    )
 
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.username)
+# 用户商店关系表
+class User_store(Base):
+    __tablename__ = 'user_store'
+    user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    store_id = Column(String(128), nullable=False)
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'store_id'),
+        {},
+    )
 
+# 未付款订单
+class New_order_pend(Base):
+    __tablename__ = 'new_order_pend'
+    order_id = Column(String(128), primary_key=True)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    price = Column(Integer, nullable=False)
+    pt=Column(TIMESTAMP, nullable=False)
 
-class Book(Base):
-    __tablename__ = 'book'
-    id = Column(Integer, nullable=False)
-    book_name = Column(String(64), primary_key=True)
-    # “多”的一方的book表是通过外键关联到user表的:
-    user_name = Column(Integer,ForeignKey('users.id'),index=True)
-    #目的：对于某些访问频繁（where中用的多）的数据加快访问速度
-    #优点：加快数据访问 缺点：占用空间，树维护代价 o(n)到o(logn)
-    #update次数比较少 树维护也是需要代价的 改的不多经常用就能建索引
-    #author=relationship(User)
+# 已取消订单
+class New_order_cancel(Base):
+    __tablename__ = 'new_order_cancel'
+    order_id = Column(String(128), primary_key=True)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    price = Column(Integer, nullable=False)
 
-    def __repr__(self):#定义 __repr__ 是为了方便调试，你可以不定义，也可以定义的更详细一些。
-        return '%s(%r)' % (self.__class__.__name__, self.user_name)#有时候报错可能只是因为__repr__没写对或者写了东西
+# 已付款订单
+class New_order_paid(Base):
+    __tablename__ = 'new_order_paid'
+    order_id = Column(String(128), primary_key=True)
+    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+    price = Column(Integer, nullable=False)
+    status = Column(Integer, nullable=False)
 
-Base.metadata.create_all(engine)#创建对应的表
-def dbadd():
-    #######################增
-    user1 = User(id=123,username='mk',password='1',email='chennuo909@163.com')
-    session.add(user1)
-    user1 = User(id=1,username='mk2',password='1',email='chennuo909@163.com')
-    session.add(user1)
-    book1 = Book(id=3,book_name='yzynb',user_name=123)
-    session.add_all([book1])
-def dbfind():
-    ########################查
-    user = session.query(User).filter(User.id==123).one()
-    print(user.books[0].user_name)####这就是relationship的好处 主表查从表 user.books有多本 查第一本
-    #正向查询 通过查users得到book里的字段 起作用的是relationship中的Book字段（因为外码）
-    #用户 id，就可以用 get 方法， filter_by 用于按某一个字段过滤，而 filter 可以让我们按多个字段过滤，all 则是获取所有
-    abook = session.query(Book).filter_by(book_name='yzynb2').first()
-    #反向查询 因为定义了,backref='author'所以不要倒过来再写一遍
-    print(abook.author.email)
-    # 打印类型和对象的name属性:
-    print('type:', type(user))#直接就变成一个对象
-    print('name:', user.username)
-def dbchange():
-    ########################改
-    a = session.query(User).get(1)#查
-    a.password = '3'
-    # a.books.append(Book(id=10001,book_name='yzynb2',user_name=1243))#增
-    session.add(a)
-def dbdelete():
-    #######################删
-    a = session.query(User).get(1)#删
-    session.delete(a)
-def dbselect():
-########################直接命令行
-    # users = session.execute("SELECT id,username,password,email FROM users").fetchall()#能找到对象
-    # print(type(users[0]))
-    # for auser in users:
-    #     print(f"id：{auser.id},username：{auser.username},password={auser.password},email={auser.email}")
-    users = session.execute("SELECT count(password) FROM users").fetchall()#能找到对象
-    print(users[0])
-    # for auser in users:
-    #     print(f"id：{auser.count(password)},username：{auser.username},password={auser.password},email={auser.email}")
+# 订单中的书本信息
+class New_order_detail(Base):
+    __tablename__ = 'new_order_detail'
+    order_id = Column(String(128), nullable=False)
+    book_id = Column(Integer, nullable=False)
+    count = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
+    __table_args__ = (
+        PrimaryKeyConstraint('order_id', 'book_id'),
+        {},
+    )
 
 
-dbselect()
-#提交即保存到数据库
-session.commit()
-#关闭session
-session.close()
+def init():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    Base.metadata.create_all(engine)
+    # 提交即保存到数据库
+    session.commit()
+    # 关闭session
+    session.close()
+
+def add_info():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    # 提交即保存到数据库A
+    A = User(user_id = 'A',
+            password = '123456',
+            balance = 100,
+            token = 'AAA',
+            terminal = 'AAA')
+    B = User(user_id = 'B',
+            password = '123456',
+            balance = 500,
+            token = 'BBB',
+            terminal='BBB')
+    StoreA = Store(store_id = 'StoreA',
+                    book_id = 'BookA',
+                    book_info='A nice book.',
+                    stock_level=10,
+                    price=10)
+    StoreB = Store(store_id = 'StoreB',
+                    book_id = 'BookA',
+                    book_info='A nice book.',
+                    stock_level=10,
+                    price=10)
+    session.add_all([A, B ,StoreA])
+    session.commit()
+    A_Store1 = User_store(user_id = 'A',
+                        store_id = 'StoreA')
+    A_Store2 = User_store(user_id = 'A',
+                        store_id = 'StoreB')
+    OrderA = New_order_paid(order_id = 'order1',
+                            buyer_id = 'B',
+                            seller_id = 'A',
+                            price = 20,
+                            status = 'Already evaluated')  # 或者Send goods 或者Received goods
+    Order_detailA = New_order_detail(order_id = 'order1',
+                                    book_id = 'BookA',
+                                    count = 2,
+                                    price = 20)
+    session.add_all([
+        A_Store1, A_Store2, OrderA, Order_detailA
+    ])
+    session.commit()
+    # 关闭session
+    session.close()
+
+if __name__ == "__main__":
+    # 创建数据库
+    init()
+    # 加入信息
+    #add_info()

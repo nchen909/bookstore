@@ -75,14 +75,15 @@ class Buyer():
 
             for book_id, count in id_and_count:
                 # 查库存
+                book_id=int(book_id)
                 book = self.session.execute(
-                    "SELECT stock_level,price FROM store WHERE store_id = '%s' AND book_id = '%s';" % (
+                    "SELECT stock_level,price FROM store WHERE store_id = '%s' AND book_id = %d" % (
                         store_id, book_id)).fetchone()
                 if book is None:
-                    code, mes = error.error_non_exist_book_id(book_id)
+                    code, mes = error.error_non_exist_book_id(str(book_id))
                     return code, mes, " "
                 if book[0] < count:
-                    code, mes = error.error_stock_level_low(book_id)
+                    code, mes = error.error_stock_level_low(str(book_id))
                     return code, mes, " "
                 book_list.append([book_id, count, book[1]])
             sum = 0
@@ -91,7 +92,7 @@ class Buyer():
                 sum += count * price
                 # 减库存，取消订单的话要加回来。
                 res = self.session.execute(
-                    "UPDATE store set stock_level = stock_level - %d WHERE store_id = '%s' and book_id = '%s'  and stock_level >=%d" % (
+                    "UPDATE store set stock_level = stock_level - %d WHERE store_id = '%s' and book_id = %d  and stock_level >=%d" % (
                         count, store_id, book_id, count))
                 if res.rowcount == 0:
                     code, mes = error.error_stock_level_low(book_id)
@@ -99,17 +100,20 @@ class Buyer():
                     # 订单细节
 
                 self.session.execute(
-                    "INSERT INTO new_order_detail(order_id, book_id, count, price) VALUES('%s', '%s', %d, %d);" % (
+                    "INSERT INTO new_order_detail(order_id, book_id, count, price) VALUES('%s',%d, %d, %d);" % (
                         order_id, book_id, count, price))
             timenow = datetime.utcnow()
             # 最终下单
             self.session.execute(
-                "INSERT INTO new_order_pend(order_id, buyer_id,seller_id,price,pt) VALUES('%s', '%s','%s',%d,'%s');" % (
-                    order_id, user_id, storeinfo[0], sum, timenow))
+                "INSERT INTO new_order_pend(order_id, buyer_id,seller_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
+                    order_id, user_id, storeinfo[0], sum),{'timenow':timenow})
             self.session.commit()
             return 200, "ok", order_id
+        except ValueError:
+            code, mes = error.error_non_exist_book_id(book_id)
+            return code, mes, " "
         except sqlalchemy.exc.IntegrityError:
-            code, mes = error.error_authorization_fail()
+            code, mes = error.error_duplicate_bookid()
             return code, mes, " "
 
     def pay(self, buyer_id, password, order_id):
@@ -152,4 +156,18 @@ class Buyer():
                 order_id, buyer_id, seller_id, price, 0))
         self.session.commit()
 
+        return 200, "ok"
+
+    def receive_books(self, buyer_id, order_id):
+        row = self.session.execute(
+            "SELECT status,buyer_id FROM new_order_paid WHERE order_id = '%s'" % (order_id,)).fetchone()
+        if row is None:
+            return error.error_invalid_order_id(order_id)
+        if row[0] != 1:
+            return 522, "book hasn't been sent to costumer"
+        if row[1] != buyer_id:
+            return error.error_authorization_fail()
+        self.session.execute(
+            "UPDATE new_order_paid set status=2 where order_id = '%s' ;" % (order_id))
+        self.session.commit()
         return 200, "ok"
