@@ -6,9 +6,7 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-engine = create_engine(
-    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore'
-)
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 
 Base = declarative_base()
 
@@ -19,8 +17,8 @@ class User(Base):
     user_id = Column(String(128), primary_key=True)
     password = Column(String(128), nullable=False)
     balance = Column(Integer, nullable=False)
-    token = Column(String(400))
-    terminal = Column(String(64))
+    token = Column(String(64), nullable=False)
+    terminal = Column(String(64), nullable=False)
 
 
 # 商店表（含书本信息）
@@ -176,6 +174,7 @@ def add_info():
     session.commit()
     # 关闭session
     session.close()
+
 
 if __name__ == "__main__":
     # 创建数据库
