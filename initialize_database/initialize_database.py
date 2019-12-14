@@ -94,7 +94,7 @@ class New_order_paid(Base):
     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
     pt = Column(DateTime, nullable=False)
-    status = Column(Boolean, nullable=False) # 0为已发货，1为已收获
+    status = Column(Integer, nullable=False) # 0为待发货，1为已发货，2为已收货
 
 
 # 订单中的书本信息
