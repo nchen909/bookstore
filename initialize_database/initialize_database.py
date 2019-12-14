@@ -17,7 +17,7 @@ class User(Base):
     user_id = Column(String(128), primary_key=True)
     password = Column(String(128), nullable=False)
     balance = Column(Integer, nullable=False)
-    token = Column(String(64), nullable=False)
+    token = Column(String(400), nullable=False)
     terminal = Column(String(64), nullable=False)
 
 
