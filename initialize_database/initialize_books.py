@@ -1,38 +1,64 @@
-from sqlalchemy import create_engine
+#与book.py一样
+"""
+# -!- coding: utf-8 -!-
+"""
+import os
+import sqlite3 as sqlite
+import random
+import base64
+import simplejson as json
+
+
+class Bookinit:
+    id: str
+    title: str
+    author: str
+    publisher: str
+    original_title: str
+    translator: str
+    pub_year: str
+    pages: int
+    price: int
+    binding: str
+    isbn: str
+    author_intro: str
+    book_intro: str
+    content: str
+    tags: [str]
+    pictures: [bytes]
+
+    def __init__(self):
+        self.tags = []
+        self.pictures = []
+
+from sqlalchemy import create_engine  #, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint, Text, DateTime, Boolean, LargeBinary
 from sqlalchemy.orm import sessionmaker
-
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import psycopg2
 from datetime import datetime,time
+
+# import enum
+# class MyEnum(enum.Enum):
+#     thelist=[]
+#
+# t = Table(
+#     'data', MetaData(),
+#     Column('value', Enum(MyEnum))
+# )
+#
+# connection.execute(t.insert(), {"value": MyEnum.two})
+# assert connection.scalar(t.select()) is MyEnum.two
+
+
 # 连接数据库legend 记得修改这个！！！
 # engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
 engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 Base = declarative_base()
-
-# # String长度可能需要做修改
-# # 用户表
-# class User(Base):
-#     __tablename__ = 'usr'
-#     user_id = Column(String(128), primary_key=True)
-#     password = Column(String(128), nullable=False)
-#     balance = Column(Integer, nullable=False)
-#     token = Column(String(400))
-#     terminal = Column(String(64))
-#
-#
-# # 商店表（含书本信息）
-# class Store(Base):
-#     __tablename__ = 'store'
-#     store_id = Column(String(128), nullable=False)
-#     book_id = Column(Integer, nullable=False)
-#     stock_level = Column(Integer, nullable=False)
-#     price = Column(Integer, nullable=False) # 售价
-#     __table_args__ = (
-#         PrimaryKeyConstraint('store_id', 'book_id'),
-#         {},
-#     )
-
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 class Book(Base):
     __tablename__ = 'book'
     book_id = Column(Integer, primary_key=True)
@@ -53,129 +79,226 @@ class Book(Base):
     tags = Column(Text)
     picture = Column(LargeBinary)
 
-#
-# # 用户商店关系表
-# class User_store(Base):
-#     __tablename__ = 'user_store'
-#     user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     store_id = Column(String(128), nullable=False)
-#     __table_args__ = (
-#         PrimaryKeyConstraint('user_id', 'store_id'),
-#         {},
-#     )
-#
-#
-# # 未付款订单
-# class New_order_pend(Base):
-#     __tablename__ = 'new_order_pend'
-#     order_id = Column(String(128), primary_key=True)
-#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     price = Column(Integer, nullable=False)
-#     pt = Column(DateTime, nullable=False)
-#
-#
-# # 已取消订单
-# class New_order_cancel(Base):
-#     __tablename__ = 'new_order_cancel'
-#     order_id = Column(String(128), primary_key=True)
-#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     price = Column(Integer, nullable=False)
-#     pt = Column(DateTime, nullable=False)
-#
-# # 已付款订单
-# class New_order_paid(Base):
-#     __tablename__ = 'new_order_paid'
-#     order_id = Column(String(128), primary_key=True)
-#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-#     price = Column(Integer, nullable=False)
-#     status = Column(Integer, nullable=False) # 0为已付款，1为已发货，2为已收货
-#
-#
-# # 订单中的书本信息
-# class New_order_detail(Base):
-#     __tablename__ = 'new_order_detail'
-#     order_id = Column(String(128), nullable=False)
-#     book_id = Column(Integer, nullable=False)
-#     count = Column(Integer, nullable=False)
-#     price = Column(Integer, nullable=False)
-#     __table_args__ = (
-#         PrimaryKeyConstraint('order_id', 'book_id'),
-#         {},
-#     )
-
 def init():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     Base.metadata.create_all(engine)
-    # 提交即保存到数据库
     session.commit()
     # 关闭session
     session.close()
+class BookDB:
+    def __init__(self, large: bool = False):
+        parent_path = os.path.dirname(os.path.dirname(__file__))
+        self.db_s = os.path.join(parent_path, "data/book.db")
+        self.db_l = os.path.join(parent_path, "data/book_lx.db")
+        if large:
+            self.book_db = self.db_l
+        else:
+            self.book_db = self.db_s
 
-def add_info():
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    # 提交即保存到数据库A
-    A = User(user_id = '王掌柜',
-            password = '123456',
-            balance = 100,
-            token = '***',
-            terminal = 'Edge')
-    B = User(user_id = '小明',
-            password = '123456',
-            balance = 500,
-            token = '***',
-            terminal='Chrome')
-    Book1 = Book(book_id = 0,
-                title='数据结构')
-    Book2 = Book(book_id=1,
-                title='PRML')
-    session.add_all([A, B, Book1, Book2])
-    session.commit()
-    StoreA = Store(store_id = '王掌柜的书店',
-                    book_id = 0,
-                    stock_level=10,
-                    price=1000) # 价格单位是分
-    StoreB = Store(store_id = '王掌柜的进口书店',
-                    book_id = 1,
-                    stock_level=10,
-                    price=10000)
-    session.add_all([StoreA, StoreB])
-    session.commit()
-    A_Store1 = User_store(user_id = '王掌柜',
-                        store_id = '王掌柜的书店')
-    A_Store2 = User_store(user_id = '王掌柜',
-                        store_id = '王掌柜的进口书店')
-    OrderA = New_order_paid(order_id = 'order1',
-                            buyer_id = '小明',
-                            seller_id = '王掌柜',
-                            price=2000,
-                            status = 0)  # 0为已发货，1为已收获
-    Order_detailA = New_order_detail(order_id = 'order1',
-                                    book_id = 0,
-                                    count = 2,
-                                    price = 2000)
-    OrderB = New_order_pend(order_id = 'order2',
-                            buyer_id = '小明',
-                            seller_id = '王掌柜',
-                            price = 10000,
-                            pt = datetime.now())
-    Order_detailB = New_order_detail(order_id = 'order2',
-                                    book_id = 1,
-                                    count = 1,
-                                    price = 10000)
-    session.add_all([
-        A_Store1, A_Store2, OrderA, Order_detailA, OrderB, Order_detailB
-    ])
-    session.commit()
-    # 关闭session
-    session.close()
+    def get_book_count(self):
+        conn = sqlite.connect(self.book_db)
+        cursor = conn.execute(
+            "SELECT count(id) FROM book")
+        row = cursor.fetchone()
+        return row[0]
 
-if __name__ == "__main__":
-    # 创建数据库
+    def get_book_info(self, start, size) -> [Book]:
+        books = []
+        conn = sqlite.connect(self.book_db)
+        cursor = conn.execute(
+            "SELECT id, title, author, "
+            "publisher, original_title, "
+            "translator, pub_year, pages, "
+            "price, currency_unit, binding, "
+            "isbn, author_intro, book_intro, "
+            "content, tags, picture FROM book ORDER BY id "
+            "LIMIT ? OFFSET ?", (size, start))
+        for row in cursor:
+            book = Bookinit()
+            book.id = row[0]
+            book.title = row[1]
+            book.author = row[2]
+            book.publisher = row[3]
+            book.original_title = row[4]
+            book.translator = row[5]
+            book.pub_year = row[6]
+            book.pages = row[7]
+            book.price = row[8]
+
+            book.currency_unit = row[9]
+            book.binding = row[10]
+            book.isbn = row[11]
+            book.author_intro = row[12]
+            book.book_intro = row[13]
+            book.content = row[14]
+            tags = row[15]
+
+            picture = row[16]
+
+            for tag in tags.split("\n"):
+                if tag.strip() != "":
+                    book.tags.append(tag)
+            for i in range(0, random.randint(0, 9)):
+                if picture is not None:
+                    encode_str = base64.b64encode(picture).decode('utf-8')
+                    book.pictures.append(encode_str)
+            books.append(book)
+            # print(tags.decode('utf-8'))
+
+            # print(book.tags, len(book.picture))
+            # print(book)
+            # print(tags)
+
+        return books
+    def send_info_to_db(self,start,size):
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        conn = sqlite.connect(self.book_db)
+        cursor = conn.execute(
+            "SELECT id, title, author, "
+            "publisher, original_title, "
+            "translator, pub_year, pages, "
+            "price, currency_unit, binding, "
+            "isbn, author_intro, book_intro, "
+            "content, tags, picture FROM book ORDER BY id "
+            "LIMIT ? OFFSET ?", (size, start))
+        for row in cursor:
+            book = Book()
+            book.id = row[0]
+            book.title = row[1]
+            book.author = row[2]
+            book.publisher = row[3]
+            book.original_title = row[4]
+            book.translator = row[5]
+            book.pub_year = row[6]
+            book.pages = row[7]
+            book.price = row[8]
+
+            book.currency_unit = row[9]
+            book.binding = row[10]
+            book.isbn = row[11]
+            book.author_intro = row[12]
+            book.book_intro = row[13]
+            book.content = row[14]
+            tags = row[15]
+
+            picture = row[16]
+            # tagenum=MyEnum(enum.Enum)
+            thelist=[]#由于没有列表类型，故使用将列表转为text的办法
+            for tag in tags.split("\n"):
+                if tag.strip() != "":
+                    # book.tags.append(tag)
+                    thelist.append(tag)
+            book.tags=str(thelist)#解析成list请使用eval()
+            book.picture = None
+            # thelistforpic=[]
+            # for i in range(0, random.randint(0, 9)):
+            if picture is not None:
+                ##以下为查看图片代码
+                # with open('code.png', 'wb') as fn:  # wb代表二进制文件
+                #     fn.write(picture)
+                # img = mpimg.imread('code.png', 0)
+                # plt.imshow(img)
+                # plt.axis('off')
+                # plt.show()
+
+
+                # encode_str = base64.b64encode(picture).decode('utf-8')
+                # # book.pictures.append(encode_str)
+                # print(type(encode_str))
+                book.picture=picture
+
+            session.add(book)
+        session.commit()
+        # 关闭session
+        session.close()
+    def send_info(self):
+        bookdb.send_info_to_db(0, bookdb.get_book_count())#count=100 or 整张表
+
+    def send_info_to_db_multipool(self,start,size):
+
+        conn = sqlite.connect(self.book_db)
+        cursor = conn.execute(
+            "SELECT id, title, author, "
+            "publisher, original_title, "
+            "translator, pub_year, pages, "
+            "price, currency_unit, binding, "
+            "isbn, author_intro, book_intro, "
+            "content, tags, picture FROM book ORDER BY id "
+            "LIMIT ? OFFSET ?", (size, start))
+        self.main1(cursor)
+        session.commit()
+        # 关闭session
+        session.close()
+
+    def row_iter(self,row):
+        book = Book()
+        book.id = row[0]
+        book.title = row[1]
+        book.author = row[2]
+        book.publisher = row[3]
+        book.original_title = row[4]
+        book.translator = row[5]
+        book.pub_year = row[6]
+        book.pages = row[7]
+        book.price = row[8]
+
+        book.currency_unit = row[9]
+        book.binding = row[10]
+        book.isbn = row[11]
+        book.author_intro = row[12]
+        book.book_intro = row[13]
+        book.content = row[14]
+        tags = row[15]
+
+        picture = row[16]
+        # tagenum=MyEnum(enum.Enum)
+        thelist = []  # 由于没有列表类型，故使用将列表转为text的办法
+        for tag in tags.split("\n"):
+            if tag.strip() != "":
+                # book.tags.append(tag)
+                thelist.append(tag)
+        book.tags = str(thelist)  # 解析成list请使用eval()
+        book.picture = None
+        # thelistforpic=[]
+        # for i in range(0, random.randint(0, 9)):
+        if picture is not None:
+            ##以下为查看图片代码
+            # with open('code.png', 'wb') as fn:  # wb代表二进制文件
+            #     fn.write(picture)
+            # img = mpimg.imread('code.png', 0)
+            # plt.imshow(img)
+            # plt.axis('off')
+            # plt.show()
+
+            # encode_str = base64.b64encode(picture).decode('utf-8')
+            # # book.pictures.append(encode_str)
+            # print(type(encode_str))
+            book.picture = picture
+
+        session.add(book)
+    def main1(self,groups):  # nothing:3.12s nothing2:3.207s
+        from multiprocessing.pool import Pool
+        pool = Pool(os.cpu_count())
+        #groups = [x for x in range(MAX_NUM)] 要遍历的东西
+        pool.map(self.row_iter, groups)
+        pool.close()
+        pool.join()
+
+    def send_info_multipool(self):
+        bookdb.send_info_to_db_multipool(0, bookdb.get_book_count())#count=100 or 整张表
+if __name__ == '__main__':
+
+    bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
+    # bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
+    print(bookdb.get_book_count())
+    # for i in bookdb.get_book_info(0,bookdb.get_book_count()):
+    #     print(i.tags)
     init()
-    # 加入信息
-    add_info()
+    import time
+    start = time.time()
+    bookdb.send_info()
+    # bookdb.send_info_multipool()#多进程
+    end = time.time()
+    print (end-start)
