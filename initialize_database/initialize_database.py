@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+# engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 
 Base = declarative_base()
 
@@ -17,15 +18,15 @@ class User(Base):
     user_id = Column(String(128), primary_key=True)
     password = Column(String(128), nullable=False)
     balance = Column(Integer, nullable=False)
-    token = Column(String(400))
-    terminal = Column(String(64))
+    token = Column(String(400), nullable=False)
+    terminal = Column(String(64), nullable=False)
 
 
 # 商店表（含书本信息）
 class Store(Base):
     __tablename__ = 'store'
     store_id = Column(String(128), nullable=False)
-    book_id = Column(Integer, nullable=False)
+    book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False)
     stock_level = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False) # 售价
     __table_args__ = (
@@ -91,7 +92,8 @@ class New_order_paid(Base):
     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    status = Column(Integer, nullable=False) # 0为已付款，1为已发货，2为已收货
+    pt = Column(DateTime, nullable=False)
+    status = Column(Integer, nullable=False) # 0为待发货，1为已发货，2为已收货
 
 
 # 订单中的书本信息
@@ -134,7 +136,6 @@ def add_info():
     Book2 = Book(book_id=1,
                 title='PRML')
     session.add_all([A, B, Book1, Book2])
-    session.commit()
     StoreA = Store(store_id = '王掌柜的书店',
                     book_id = 0,
                     stock_level=10,
@@ -153,6 +154,7 @@ def add_info():
                             buyer_id = '小明',
                             seller_id = '王掌柜',
                             price=2000,
+                            pt = datetime.now(),
                             status = 0)  # 0为已发货，1为已收获
     Order_detailA = New_order_detail(order_id = 'order1',
                                     book_id = 0,
@@ -173,6 +175,7 @@ def add_info():
     session.commit()
     # 关闭session
     session.close()
+
 
 if __name__ == "__main__":
     # 创建数据库

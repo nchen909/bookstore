@@ -19,7 +19,13 @@
 
 ![image-20191214224628115](README.assets/image-20191214224628115.png)
 
-理由是使用第二种方法可以避免发起pull request再手动通过的方式，实现多人快速平等合作。（可以直接clone github.com/1012598167，并可以直接push）并且每个人的origin/下只有一个分支origin/master，若有更新，成员确保及时fetch并merge -s ours origin/master到本地（每人的pycharm配置文件不同），成员自己本地会维护多个分支，以防本地编写错误的急救以及各功能的控制。
+理由是使用第二种方法可以避免发起pull request再手动通过的方式，实现多人快速平等合作。（可以直接clone github.com/1012598167，并可以直接push）并且每个人在origin/下维护自己的分支，如我的为origin/developercn，
+
+![image-20191215123707874](README.assets/image-20191215123707874.png)
+
+并及时pull request至master分支。
+
+若有更新，成员确保及时fetch并merge -s ours origin/master到本地（每人的pycharm配置文件不同），成员自己本地会维护多个分支，以防本地编写错误的急救以及各功能的控制。
 
 ![image-20191214225745199](README.assets/image-20191214225745199.png)
 
@@ -31,7 +37,7 @@
 
 - 多人合作：
 
-  个人提交：采用直接git push origin master的方式，直接上传至远程的仓库，由于相对危险，故每次写自己部分的代码时：
+  个人提交：采用git push origin developerxxx的方式，上传至远程的个人分支，并及时pull request至master，而每次写自己部分的代码时：
 
   及时拉取至本地：
 
