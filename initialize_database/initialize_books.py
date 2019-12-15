@@ -6,32 +6,32 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-
+# engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 Base = declarative_base()
 
-# String长度可能需要做修改
-# 用户表
-class User(Base):
-    __tablename__ = 'usr'
-    user_id = Column(String(128), primary_key=True)
-    password = Column(String(128), nullable=False)
-    balance = Column(Integer, nullable=False)
-    token = Column(String(400))
-    terminal = Column(String(64))
-
-
-# 商店表（含书本信息）
-class Store(Base):
-    __tablename__ = 'store'
-    store_id = Column(String(128), nullable=False)
-    book_id = Column(Integer, nullable=False)
-    stock_level = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False) # 售价
-    __table_args__ = (
-        PrimaryKeyConstraint('store_id', 'book_id'),
-        {},
-    )
+# # String长度可能需要做修改
+# # 用户表
+# class User(Base):
+#     __tablename__ = 'usr'
+#     user_id = Column(String(128), primary_key=True)
+#     password = Column(String(128), nullable=False)
+#     balance = Column(Integer, nullable=False)
+#     token = Column(String(400))
+#     terminal = Column(String(64))
+#
+#
+# # 商店表（含书本信息）
+# class Store(Base):
+#     __tablename__ = 'store'
+#     store_id = Column(String(128), nullable=False)
+#     book_id = Column(Integer, nullable=False)
+#     stock_level = Column(Integer, nullable=False)
+#     price = Column(Integer, nullable=False) # 售价
+#     __table_args__ = (
+#         PrimaryKeyConstraint('store_id', 'book_id'),
+#         {},
+#     )
 
 class Book(Base):
     __tablename__ = 'book'
@@ -53,58 +53,58 @@ class Book(Base):
     tags = Column(Text)
     picture = Column(LargeBinary)
 
-
-# 用户商店关系表
-class User_store(Base):
-    __tablename__ = 'user_store'
-    user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    store_id = Column(String(128), nullable=False)
-    __table_args__ = (
-        PrimaryKeyConstraint('user_id', 'store_id'),
-        {},
-    )
-
-
-# 未付款订单
-class New_order_pend(Base):
-    __tablename__ = 'new_order_pend'
-    order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    price = Column(Integer, nullable=False)
-    pt = Column(DateTime, nullable=False)
-
-
-# 已取消订单
-class New_order_cancel(Base):
-    __tablename__ = 'new_order_cancel'
-    order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    price = Column(Integer, nullable=False)
-    pt = Column(DateTime, nullable=False)
-
-# 已付款订单
-class New_order_paid(Base):
-    __tablename__ = 'new_order_paid'
-    order_id = Column(String(128), primary_key=True)
-    buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    price = Column(Integer, nullable=False)
-    status = Column(Integer, nullable=False) # 0为已付款，1为已发货，2为已收货
-
-
-# 订单中的书本信息
-class New_order_detail(Base):
-    __tablename__ = 'new_order_detail'
-    order_id = Column(String(128), nullable=False)
-    book_id = Column(Integer, nullable=False)
-    count = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False)
-    __table_args__ = (
-        PrimaryKeyConstraint('order_id', 'book_id'),
-        {},
-    )
+#
+# # 用户商店关系表
+# class User_store(Base):
+#     __tablename__ = 'user_store'
+#     user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     store_id = Column(String(128), nullable=False)
+#     __table_args__ = (
+#         PrimaryKeyConstraint('user_id', 'store_id'),
+#         {},
+#     )
+#
+#
+# # 未付款订单
+# class New_order_pend(Base):
+#     __tablename__ = 'new_order_pend'
+#     order_id = Column(String(128), primary_key=True)
+#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     price = Column(Integer, nullable=False)
+#     pt = Column(DateTime, nullable=False)
+#
+#
+# # 已取消订单
+# class New_order_cancel(Base):
+#     __tablename__ = 'new_order_cancel'
+#     order_id = Column(String(128), primary_key=True)
+#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     price = Column(Integer, nullable=False)
+#     pt = Column(DateTime, nullable=False)
+#
+# # 已付款订单
+# class New_order_paid(Base):
+#     __tablename__ = 'new_order_paid'
+#     order_id = Column(String(128), primary_key=True)
+#     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
+#     price = Column(Integer, nullable=False)
+#     status = Column(Integer, nullable=False) # 0为已付款，1为已发货，2为已收货
+#
+#
+# # 订单中的书本信息
+# class New_order_detail(Base):
+#     __tablename__ = 'new_order_detail'
+#     order_id = Column(String(128), nullable=False)
+#     book_id = Column(Integer, nullable=False)
+#     count = Column(Integer, nullable=False)
+#     price = Column(Integer, nullable=False)
+#     __table_args__ = (
+#         PrimaryKeyConstraint('order_id', 'book_id'),
+#         {},
+#     )
 
 def init():
     DBSession = sessionmaker(bind=engine)
