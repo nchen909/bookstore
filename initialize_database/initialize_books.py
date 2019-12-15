@@ -5,13 +5,13 @@ from sqlalchemy.orm import sessionmaker
 
 import psycopg2
 from datetime import datetime,time
-# è¿æ¥æ•°æ®åº“legend è®°å¾—ä¿®æ”¹è¿™ä¸ªï¼ï¼ï¼
-# engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/postgres',echo=True)
+# Á¬½ÓÊı¾İ¿âlegend ¼ÇµÃĞŞ¸ÄÕâ¸ö£¡£¡£¡
+engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+
 Base = declarative_base()
 
-# Stringé•¿åº¦å¯èƒ½éœ€è¦åšä¿®æ”¹
-# ç”¨æˆ·è¡¨
+# String³¤¶È¿ÉÄÜĞèÒª×öĞŞ¸Ä
+# ÓÃ»§±í
 class User(Base):
     __tablename__ = 'usr'
     user_id = Column(String(128), primary_key=True)
@@ -21,13 +21,13 @@ class User(Base):
     terminal = Column(String(64))
 
 
-# å•†åº—è¡¨ï¼ˆå«ä¹¦æœ¬ä¿¡æ¯ï¼‰
+# ÉÌµê±í£¨º¬Êé±¾ĞÅÏ¢£©
 class Store(Base):
     __tablename__ = 'store'
     store_id = Column(String(128), nullable=False)
     book_id = Column(Integer, nullable=False)
     stock_level = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False) # å”®ä»·
+    price = Column(Integer, nullable=False) # ÊÛ¼Û
     __table_args__ = (
         PrimaryKeyConstraint('store_id', 'book_id'),
         {},
@@ -43,7 +43,7 @@ class Book(Base):
     translator = Column(Text)
     pub_year = Column(Text)
     pages = Column(Integer)
-    original_price = Column(Integer) # åŸä»·
+    original_price = Column(Integer) # Ô­¼Û
     currency_unit = Column(String(16))
     binding = Column(Text)
     isbn = Column(Text)
@@ -54,7 +54,7 @@ class Book(Base):
     picture = Column(LargeBinary)
 
 
-# ç”¨æˆ·å•†åº—å…³ç³»è¡¨
+# ÓÃ»§ÉÌµê¹ØÏµ±í
 class User_store(Base):
     __tablename__ = 'user_store'
     user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
@@ -65,7 +65,7 @@ class User_store(Base):
     )
 
 
-# æœªä»˜æ¬¾è®¢å•
+# Î´¸¶¿î¶©µ¥
 class New_order_pend(Base):
     __tablename__ = 'new_order_pend'
     order_id = Column(String(128), primary_key=True)
@@ -75,7 +75,7 @@ class New_order_pend(Base):
     pt = Column(DateTime, nullable=False)
 
 
-# å·²å–æ¶ˆè®¢å•
+# ÒÑÈ¡Ïû¶©µ¥
 class New_order_cancel(Base):
     __tablename__ = 'new_order_cancel'
     order_id = Column(String(128), primary_key=True)
@@ -84,17 +84,17 @@ class New_order_cancel(Base):
     price = Column(Integer, nullable=False)
     pt = Column(DateTime, nullable=False)
 
-# å·²ä»˜æ¬¾è®¢å•
+# ÒÑ¸¶¿î¶©µ¥
 class New_order_paid(Base):
     __tablename__ = 'new_order_paid'
     order_id = Column(String(128), primary_key=True)
     buyer_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     seller_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
     price = Column(Integer, nullable=False)
-    status = Column(Integer, nullable=False) # 0ä¸ºå·²ä»˜æ¬¾ï¼Œ1ä¸ºå·²å‘è´§ï¼Œ2ä¸ºå·²æ”¶è´§
+    status = Column(Integer, nullable=False) # 0ÎªÒÑ¸¶¿î£¬1ÎªÒÑ·¢»õ£¬2ÎªÒÑÊÕ»õ
 
 
-# è®¢å•ä¸­çš„ä¹¦æœ¬ä¿¡æ¯
+# ¶©µ¥ÖĞµÄÊé±¾ĞÅÏ¢
 class New_order_detail(Base):
     __tablename__ = 'new_order_detail'
     order_id = Column(String(128), nullable=False)
@@ -110,57 +110,57 @@ def init():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     Base.metadata.create_all(engine)
-    # æäº¤å³ä¿å­˜åˆ°æ•°æ®åº“
+    # Ìá½»¼´±£´æµ½Êı¾İ¿â
     session.commit()
-    # å…³é—­session
+    # ¹Ø±Õsession
     session.close()
 
 def add_info():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    # æäº¤å³ä¿å­˜åˆ°æ•°æ®åº“A
-    A = User(user_id = 'ç‹æŒæŸœ',
+    # Ìá½»¼´±£´æµ½Êı¾İ¿âA
+    A = User(user_id = 'ÍõÕÆ¹ñ',
             password = '123456',
             balance = 100,
             token = '***',
             terminal = 'Edge')
-    B = User(user_id = 'å°æ˜',
+    B = User(user_id = 'Ğ¡Ã÷',
             password = '123456',
             balance = 500,
             token = '***',
             terminal='Chrome')
     Book1 = Book(book_id = 0,
-                title='æ•°æ®ç»“æ„')
+                title='Êı¾İ½á¹¹')
     Book2 = Book(book_id=1,
                 title='PRML')
     session.add_all([A, B, Book1, Book2])
     session.commit()
-    StoreA = Store(store_id = 'ç‹æŒæŸœçš„ä¹¦åº—',
+    StoreA = Store(store_id = 'ÍõÕÆ¹ñµÄÊéµê',
                     book_id = 0,
                     stock_level=10,
-                    price=1000) # ä»·æ ¼å•ä½æ˜¯åˆ†
-    StoreB = Store(store_id = 'ç‹æŒæŸœçš„è¿›å£ä¹¦åº—',
+                    price=1000) # ¼Û¸ñµ¥Î»ÊÇ·Ö
+    StoreB = Store(store_id = 'ÍõÕÆ¹ñµÄ½ø¿ÚÊéµê',
                     book_id = 1,
                     stock_level=10,
                     price=10000)
     session.add_all([StoreA, StoreB])
     session.commit()
-    A_Store1 = User_store(user_id = 'ç‹æŒæŸœ',
-                        store_id = 'ç‹æŒæŸœçš„ä¹¦åº—')
-    A_Store2 = User_store(user_id = 'ç‹æŒæŸœ',
-                        store_id = 'ç‹æŒæŸœçš„è¿›å£ä¹¦åº—')
+    A_Store1 = User_store(user_id = 'ÍõÕÆ¹ñ',
+                        store_id = 'ÍõÕÆ¹ñµÄÊéµê')
+    A_Store2 = User_store(user_id = 'ÍõÕÆ¹ñ',
+                        store_id = 'ÍõÕÆ¹ñµÄ½ø¿ÚÊéµê')
     OrderA = New_order_paid(order_id = 'order1',
-                            buyer_id = 'å°æ˜',
-                            seller_id = 'ç‹æŒæŸœ',
+                            buyer_id = 'Ğ¡Ã÷',
+                            seller_id = 'ÍõÕÆ¹ñ',
                             price=2000,
-                            status = 0)  # 0ä¸ºå·²å‘è´§ï¼Œ1ä¸ºå·²æ”¶è·
+                            status = 0)  # 0ÎªÒÑ·¢»õ£¬1ÎªÒÑÊÕ»ñ
     Order_detailA = New_order_detail(order_id = 'order1',
                                     book_id = 0,
                                     count = 2,
                                     price = 2000)
     OrderB = New_order_pend(order_id = 'order2',
-                            buyer_id = 'å°æ˜',
-                            seller_id = 'ç‹æŒæŸœ',
+                            buyer_id = 'Ğ¡Ã÷',
+                            seller_id = 'ÍõÕÆ¹ñ',
                             price = 10000,
                             pt = datetime.now())
     Order_detailB = New_order_detail(order_id = 'order2',
@@ -171,11 +171,11 @@ def add_info():
         A_Store1, A_Store2, OrderA, Order_detailA, OrderB, Order_detailB
     ])
     session.commit()
-    # å…³é—­session
+    # ¹Ø±Õsession
     session.close()
 
 if __name__ == "__main__":
-    # åˆ›å»ºæ•°æ®åº“
+    # ´´½¨Êı¾İ¿â
     init()
-    # åŠ å…¥ä¿¡æ¯
+    # ¼ÓÈëĞÅÏ¢
     add_info()
