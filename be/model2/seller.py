@@ -3,7 +3,7 @@ import time
 import sqlalchemy
 from be.model2.db import db
 from be.model2 import error
-
+import json
 def jwt_encode(user_id: str, terminal: str) -> str:
     encoded = jwt.encode(
         {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
@@ -66,6 +66,42 @@ class Seller():
             if not self.check_store(store_id):
                  return error.error_non_exist_store_id(store_id)
             book_id=int(book_id)
+
+            row = self.session.execute("SELECT book_id FROM book WHERE book_id = '%s';" % (book_id,)).fetchone()
+            if row is None:
+                book = json.loads(book_json_str)
+                thelist = []  # 由于没有列表类型，故使用将列表转为text的办法
+                for tag in book.get('tags'):
+                    if tag.strip() != "":
+                        # book.tags.append(tag)
+                        thelist.append(tag)
+                book['tags'] = str(thelist)  # 解析成list请使用eval(
+                if book.get('picture') is not None:
+                    self.session.execute(
+                    "INSERT into book( book_id, title,author,publisher,original_title,translator,"
+                    "pub_year,pages,original_price,currency_unit,binding,isbn,author_intro,book_intro,"
+                    "content,tags,picture) VALUES ( :book_id, :title,:author,:publisher,:original_title,:translator,"
+                    ":pub_year,:pages,:original_price,:currency_unit,:binding,:isbn,:author_intro,:book_intro,"
+                    ":content,:tags,:picture)" , {'book_id':book['id'], 'title':book['title'],'author':book['author'],
+                     'publisher':book['publisher'],'original_title':book['original_title'],'translator':book['translator'],
+                    'pub_year':book['pub_year'],'pages':book['pages'],'original_price':book['price'],'currency_unit':book['currency_unit'],
+                    'binding':book['binding'],'isbn':book['isbn'],'author_intro':book['author_intro'],'book_intro':book['book_intro'],
+                     'content':book['content'],'tags':book['tags'],'picture':book['picture']})
+                else:
+                    self.session.execute(
+                        "INSERT into book( book_id, title,author,publisher,original_title,translator,"
+                        "pub_year,pages,original_price,currency_unit,binding,isbn,author_intro,book_intro,"
+                        "content,tags) VALUES ( :book_id, :title,:author,:publisher,:original_title,:translator,"
+                        ":pub_year,:pages,:original_price,:currency_unit,:binding,:isbn,:author_intro,:book_intro,"
+                        ":content,:tags)",
+                        {'book_id': book['id'], 'title': book['title'], 'author': book['author'],
+                         'publisher': book['publisher'], 'original_title': book['original_title'],
+                         'translator': book['translator'],
+                         'pub_year': book['pub_year'], 'pages': book['pages'], 'original_price': book['price'],
+                         'currency_unit': book['currency_unit'],
+                         'binding': book['binding'], 'isbn': book['isbn'], 'author_intro': book['author_intro'],
+                         'book_intro': book['book_intro'],
+                         'content': book['content'], 'tags': book['tags']})
             self.session.execute("INSERT into store(store_id, book_id, stock_level,price) VALUES ('%s', %d,  %d,%d)"% (store_id, int(book_id), stock_level,price))
             self.session.commit()
         except sqlalchemy.exc.IntegrityError:

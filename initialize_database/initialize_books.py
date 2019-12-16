@@ -1,7 +1,4 @@
-#Óëbook.pyÒ»Ñù
-"""
-# -!- coding: utf-8 -!-
-"""
+#ï¿½ï¿½book.pyÒ»ï¿½ï¿½
 import os
 import sqlite3 as sqlite
 import random
@@ -53,9 +50,9 @@ from datetime import datetime,time
 # assert connection.scalar(t.select()) is MyEnum.two
 
 
-# Á¬½ÓÊý¾Ý¿âlegend ¼ÇµÃÐÞ¸ÄÕâ¸ö£¡£¡£¡
-# engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½legend ï¿½Çµï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+#engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 Base = declarative_base()
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -69,7 +66,7 @@ class Book(Base):
     translator = Column(Text)
     pub_year = Column(Text)
     pages = Column(Integer)
-    original_price = Column(Integer) # Ô­¼Û
+    original_price = Column(Integer) # Ô­ï¿½ï¿½
     currency_unit = Column(String(16))
     binding = Column(Text)
     isbn = Column(Text)
@@ -84,13 +81,13 @@ def init():
     session = DBSession()
     Base.metadata.create_all(engine)
     session.commit()
-    # ¹Ø±Õsession
+    # ï¿½Ø±ï¿½session
     session.close()
 class BookDB:
     def __init__(self, large: bool = False):
         parent_path = os.path.dirname(os.path.dirname(__file__))
-        self.db_s = os.path.join(parent_path, "data/book.db")
-        self.db_l = os.path.join(parent_path, "data/book_lx.db")
+        self.db_s = os.path.join(parent_path, "fe/data/book.db")
+        self.db_l = os.path.join(parent_path, "fe/data/book_lx.db")
         if large:
             self.book_db = self.db_l
         else:
@@ -185,18 +182,18 @@ class BookDB:
 
             picture = row[16]
             # tagenum=MyEnum(enum.Enum)
-            thelist=[]#ÓÉÓÚÃ»ÓÐÁÐ±íÀàÐÍ£¬¹ÊÊ¹ÓÃ½«ÁÐ±í×ªÎªtextµÄ°ì·¨
+            thelist=[]#ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¹ï¿½Ã½ï¿½ï¿½Ð±ï¿½×ªÎªtextï¿½Ä°ì·¨
             for tag in tags.split("\n"):
                 if tag.strip() != "":
                     # book.tags.append(tag)
                     thelist.append(tag)
-            book.tags=str(thelist)#½âÎö³ÉlistÇëÊ¹ÓÃeval()
+            book.tags=str(thelist)#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½ï¿½Ê¹ï¿½ï¿½eval()
             book.picture = None
             # thelistforpic=[]
             # for i in range(0, random.randint(0, 9)):
             if picture is not None:
-                ##ÒÔÏÂÎª²é¿´Í¼Æ¬´úÂë
-                # with open('code.png', 'wb') as fn:  # wb´ú±í¶þ½øÖÆÎÄ¼þ
+                ##ï¿½ï¿½ï¿½ï¿½Îªï¿½é¿´Í¼Æ¬ï¿½ï¿½ï¿½ï¿½
+                # with open('code.png', 'wb') as fn:  # wbï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
                 #     fn.write(picture)
                 # img = mpimg.imread('code.png', 0)
                 # plt.imshow(img)
@@ -211,10 +208,10 @@ class BookDB:
 
             session.add(book)
         session.commit()
-        # ¹Ø±Õsession
+        # ï¿½Ø±ï¿½session
         session.close()
     def send_info(self):
-        bookdb.send_info_to_db(0, bookdb.get_book_count())#count=100 or ÕûÕÅ±í
+        bookdb.send_info_to_db(0, bookdb.get_book_count())#count=100 or ï¿½ï¿½ï¿½Å±ï¿½
 
     def send_info_to_db_multipool(self,start,size):
 
@@ -229,7 +226,7 @@ class BookDB:
             "LIMIT ? OFFSET ?", (size, start))
         self.main1(cursor)
         session.commit()
-        # ¹Ø±Õsession
+        # ï¿½Ø±ï¿½session
         session.close()
 
     def row_iter(self,row):
@@ -254,18 +251,18 @@ class BookDB:
 
         picture = row[16]
         # tagenum=MyEnum(enum.Enum)
-        thelist = []  # ÓÉÓÚÃ»ÓÐÁÐ±íÀàÐÍ£¬¹ÊÊ¹ÓÃ½«ÁÐ±í×ªÎªtextµÄ°ì·¨
+        thelist = []  # ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¹ï¿½Ã½ï¿½ï¿½Ð±ï¿½×ªÎªtextï¿½Ä°ì·¨
         for tag in tags.split("\n"):
             if tag.strip() != "":
                 # book.tags.append(tag)
                 thelist.append(tag)
-        book.tags = str(thelist)  # ½âÎö³ÉlistÇëÊ¹ÓÃeval()
+        book.tags = str(thelist)  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½ï¿½Ê¹ï¿½ï¿½eval()
         book.picture = None
         # thelistforpic=[]
         # for i in range(0, random.randint(0, 9)):
         if picture is not None:
-            ##ÒÔÏÂÎª²é¿´Í¼Æ¬´úÂë
-            # with open('code.png', 'wb') as fn:  # wb´ú±í¶þ½øÖÆÎÄ¼þ
+            ##ï¿½ï¿½ï¿½ï¿½Îªï¿½é¿´Í¼Æ¬ï¿½ï¿½ï¿½ï¿½
+            # with open('code.png', 'wb') as fn:  # wbï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
             #     fn.write(picture)
             # img = mpimg.imread('code.png', 0)
             # plt.imshow(img)
@@ -281,17 +278,17 @@ class BookDB:
     def main1(self,groups):  # nothing:3.12s nothing2:3.207s
         from multiprocessing.pool import Pool
         pool = Pool(os.cpu_count())
-        #groups = [x for x in range(MAX_NUM)] Òª±éÀúµÄ¶«Î÷
+        #groups = [x for x in range(MAX_NUM)] Òªï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
         pool.map(self.row_iter, groups)
         pool.close()
         pool.join()
 
     def send_info_multipool(self):
-        bookdb.send_info_to_db_multipool(0, bookdb.get_book_count())#count=100 or ÕûÕÅ±í
+        bookdb.send_info_to_db_multipool(0, bookdb.get_book_count())#count=100 or ï¿½ï¿½ï¿½Å±ï¿½
 if __name__ == '__main__':
 
-    bookdb=BookDB()#µ¥½ø³Ì0.7148709297180176 ¶à½ø³Ì2.212113380432129
-    # bookdb=BookDB(large=True)#µ¼ÈëÕûÕÅ±í 43988Êý¾Ý »¹Ã»ÅÜÍ¨ ²»ÖªµÀ¶à½ø³Ì»á²»»á±Èµ¥½ø³Ì¿ì
+    bookdb=BookDB()#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0.7148709297180176 ï¿½ï¿½ï¿½ï¿½ï¿½2.212113380432129
+    # bookdb=BookDB(large=True)#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½ 43988ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½Í¨ ï¿½ï¿½Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì»á²»ï¿½ï¿½Èµï¿½ï¿½ï¿½ï¿½Ì¿ï¿½
     print(bookdb.get_book_count())
     # for i in bookdb.get_book_info(0,bookdb.get_book_count()):
     #     print(i.tags)
@@ -299,6 +296,6 @@ if __name__ == '__main__':
     import time
     start = time.time()
     bookdb.send_info()
-    # bookdb.send_info_multipool()#¶à½ø³Ì
+    # bookdb.send_info_multipool()#ï¿½ï¿½ï¿½ï¿½ï¿½
     end = time.time()
     print (end-start)

@@ -151,9 +151,10 @@ class Buyer():
         if row.rowcount == 0:
             return error.error_invalid_order_id(order_id)
         # 加入已付款订单表
+        timenow = datetime.utcnow()
         self.session.execute(
-            "INSERT INTO new_order_paid(order_id, buyer_id,seller_id,price,status) VALUES('%s', '%s','%s',%d,'%s');" % (
-                order_id, buyer_id, seller_id, price, 0))
+            "INSERT INTO new_order_paid(order_id, buyer_id,seller_id,price,status,pt) VALUES('%s', '%s','%s',%d,'%s',:timenow);" % (
+                order_id, buyer_id, seller_id, price, 0),{'timenow':timenow})
         self.session.commit()
 
         return 200, "ok"
