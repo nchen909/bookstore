@@ -61,7 +61,6 @@ def error_not_sufficient_funds(order_id):
 def error_authorization_fail():
     return 401, error_code[401]
 
-
 def error_duplicate_bookid():
     return 520, error_code[520]
 

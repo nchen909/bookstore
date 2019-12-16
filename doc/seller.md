@@ -175,3 +175,43 @@ Status Code:
 --- | ---
 200 | 创建商铺成功
 5XX | 商铺ID已存在
+
+
+
+## 商家发货
+
+
+#### URL
+
+POST http://[address]/seller/send_books
+
+#### Request
+Headers:
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+token | string | 登录产生的会话标识 | N
+
+Body:
+
+```json
+{
+  "seller_id": "$seller id$",
+  "order_id": "$order id$"
+}
+```
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+seller_id | string | 卖家用户ID | N
+order_id | string | 订单ID | N
+
+#### Response
+
+Status Code:
+
+码 | 描述
+--- | ---
+200 | 成功
+518 | 订单不存在
+401 | 商户id错误
+521 | 已发货

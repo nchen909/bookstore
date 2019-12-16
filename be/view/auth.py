@@ -1,22 +1,10 @@
 from flask import Blueprint
 from flask import request
 from flask import jsonify
-from be.model2 import user
+from be.model import user
 
 bp_auth = Blueprint("auth", __name__, url_prefix="/auth")
 
-
-@bp_auth.route("/register2/<string:user_id>/<string:password>", methods=['GET'])
-def register2( user_id,password):
-    u = user.User()
-    code, message = u.register(user_id=user_id, password=password)
-    return jsonify({"message": message}), code
-
-@bp_auth.route("/login2/<string:terminal>/<string:user_id>/<string:password>", methods=["GET"])
-def login2(terminal,user_id,password):
-    u = user.User()
-    code, message, token = u.login(user_id=user_id, password=password, terminal=terminal)
-    return jsonify({"message": message, "token": token}), code
 
 @bp_auth.route("/login", methods=["POST"])
 def login():

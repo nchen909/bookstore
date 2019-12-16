@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import request
 from flask import jsonify
 from be.model2.buyer import Buyer
-
+import threading, multiprocessing
 bp_buyer = Blueprint("buyer", __name__, url_prefix="/buyer")
 
 
@@ -18,7 +18,7 @@ def new_order():
         id_and_count.append((book_id, count))
 
     b = Buyer()
-    code, message, order_id = b.new_order(user_id, store_id, id_and_count)
+    code, message, order_id = b.order(user_id, store_id, id_and_count)
     return jsonify({"message": message, "order_id": order_id}), code
 
 
@@ -28,7 +28,7 @@ def payment():
     order_id: str = request.json.get("order_id")
     password: str = request.json.get("password")
     b = Buyer()
-    code, message = b.payment(user_id, password, order_id)
+    code, message = b.pay(user_id, password, order_id)
     return jsonify({"message": message}), code
 
 
@@ -38,5 +38,15 @@ def add_funds():
     password = request.json.get("password")
     add_value = request.json.get("add_value")
     b = Buyer()
-    code, message = b.add_funds(user_id, password, add_value)
+    code, message = b.add_money(user_id, password, add_value)
+    return jsonify({"message": message}), code
+
+@bp_buyer.route("/receive_books", methods=["POST"])
+def send_books():
+    user_id: str = request.json.get("buyer_id")
+    order_id: str = request.json.get("order_id")
+
+    b = Buyer()
+    code, message = b.receive_books(user_id, order_id)
+
     return jsonify({"message": message}), code
