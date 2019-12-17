@@ -1,0 +1,19 @@
+back_stock函数
+### 一键更新所有
+Update store
+Set stock_level = stock_level + (Select count
+								From new_order_detail
+								Where new_order_detail.book_id = store.book_id  
+								And new_order_detail.order_id = 'order1')
+Where store.store_id = '王掌柜的书店';
+
+
+### 循环遍历book_id更新值
+Update store
+Set stock_level = stock_level + (
+				Select count
+				From new_order_detail
+				Where order_id = 'order1'
+				And book_id = 0)
+Where store_id = '王掌柜的书店'
+And store.book_id = 0

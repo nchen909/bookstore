@@ -6,8 +6,8 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-engine = create_engine('postgresql://postgres:990814@localhost/bookstore')
-# engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
+# engine = create_engine('postgresql://postgres:990814@localhost/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
 
 Base = declarative_base()
 
@@ -25,8 +25,8 @@ class User(Base):
 # 商店表（含书本信息）
 class Store(Base):
     __tablename__ = 'store'
-    store_id = Column(String(128), ForeignKey('user_store.store_id'), nullable=False)
-    book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False)
+    store_id = Column(String(128), ForeignKey('user_store.store_id'), nullable=False, index = True)
+    book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False, index = True)
     stock_level = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False) # 售价
     __table_args__ = (
@@ -58,8 +58,8 @@ class Book(Base):
 # 用户商店关系表
 class User_store(Base):
     __tablename__ = 'user_store'
-    user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False)
-    store_id = Column(String(128), nullable=False, unique=True) # 这里的store不可能重复
+    user_id = Column(String(128), ForeignKey('usr.user_id'), nullable=False, index = True)
+    store_id = Column(String(128), nullable=False, unique=True, index = True) # 这里的store不可能重复
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'store_id'),
         {},
@@ -133,7 +133,7 @@ def add_info():
             terminal='Chrome')
     session.add_all([A, B])
     session.commit()
-    
+
     A_Store1 = User_store(user_id = '王掌柜',
                         store_id = '王掌柜的书店')
     A_Store2 = User_store(user_id = '王掌柜',
