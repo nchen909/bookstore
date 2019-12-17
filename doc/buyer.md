@@ -145,3 +145,113 @@ Status Code:
 200 | 充值成功
 401 | 授权失败
 5XX | 无效参数
+
+## 买家收货
+
+
+#### URL
+
+POST http://[address]/buyer/receive_books
+
+#### Request
+Headers:
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+token | string | 登录产生的会话标识 | N
+
+Body:
+
+```json
+{
+  "buyer_id": "$buyerer id$",
+  "order_id": "$order id$"
+}
+```
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+buyer_id | string | 买家用户ID | N
+order_id | string | 订单ID | N
+#### Response
+
+Status Code:
+
+码 | 描述
+--- | ---
+200 | 成功
+522| 未发货
+523 | 已收货
+401| 授权失败
+518 | 用户id，订单不匹配
+
+## 搜索历史订单
+
+#### URL：
+POST http://[address]/buyer/search_order
+
+#### Request
+Headers:
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+token | string | 登录产生的会话标识 | N
+##### Body:
+```json
+{
+  "buyer_id": "user_id"
+}
+```
+
+##### 属性说明：
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+buyer_id | string | 买家用户ID | N
+
+Status Code:
+
+码 | 描述
+--- | ---
+200 | 搜索成功
+511 | 无效用户id
+
+##### 搜索返回格式：
+```json
+[
+ { "order_id": "order_id1",
+  "status": "status",
+  "pt": "time",
+  "total_price": 432,
+  "detail": [
+    {
+      "title": "三毛",
+      "count": 1,
+      "price": 23
+    },
+    {
+      "title": "安妮的世界",
+      "count": 1,
+      "price": 23
+    }
+  ]
+  },
+  { "order_id": "order_id2",
+  "status": "status",
+  "pt": "time",
+  "total_price": 432,
+  "detail": [
+    {
+      "title": "鸡汤",
+      "count": 1,
+      "price": 23
+    },
+    {
+      "title": "小王子",
+      "count": 1,
+      "price": 23
+    }
+  ]
+  }
+]  
+
+```

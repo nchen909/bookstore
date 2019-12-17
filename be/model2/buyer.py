@@ -1,11 +1,14 @@
 import  jwt
 from datetime import datetime
-
+import json
 import sqlalchemy
 import logging
 from be.model2.db import db
 from be.model2 import error
 import uuid
+import time
+from flask import jsonify
+
 def jwt_encode(user_id: str, terminal: str) -> str:
     encoded = jwt.encode(
         {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
@@ -13,6 +16,14 @@ def jwt_encode(user_id: str, terminal: str) -> str:
         algorithm="HS256",
     )
     return encoded.decode("utf-8")
+
+
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return json.JSONEncoder.default(self, obj)
 
 # decode a JWT to a json string like:
 #   {
@@ -105,8 +116,8 @@ class Buyer():
             timenow = datetime.utcnow()
             # 最终下单
             self.session.execute(
-                "INSERT INTO new_order_pend(order_id, buyer_id,seller_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
-                    order_id, user_id, storeinfo[0], sum),{'timenow':timenow})
+                "INSERT INTO new_order_pend(order_id, buyer_id,store_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
+                    order_id, user_id, store_id, sum),{'timenow':timenow})
             self.session.commit()
             return 200, "ok", order_id
         except ValueError:
@@ -119,11 +130,11 @@ class Buyer():
     def pay(self, buyer_id, password, order_id):
         # 该用户是否有这个订单代付
         row = self.session.execute(
-            "SELECT buyer_id,price,seller_id FROM new_order_pend WHERE order_id = '%s'" % (order_id,)).fetchone()
+            "SELECT buyer_id,price,store_id FROM new_order_pend WHERE order_id = '%s'" % (order_id,)).fetchone()
         if row is None:
             return error.error_invalid_order_id(order_id)
         price = row[1]
-        seller_id = row[2]
+        store_id = row[2]
         if row[0] != buyer_id:
             return error.error_authorization_fail()
         # 检查密码 余额
@@ -142,8 +153,10 @@ class Buyer():
         if row.rowcount == 0:
             return error.error_not_sufficient_funds(order_id)
         # 卖家加钱
+        storeinfo = self.session.execute(
+            "SELECT user_id FROM user_store WHERE store_id = '%s';" % (store_id,)).fetchone()
         row = self.session.execute(
-            "UPDATE usr set balance = balance + %d WHERE user_id = '%s'" % (price, seller_id))
+            "UPDATE usr set balance = balance + %d WHERE user_id = '%s'" % (price, storeinfo[0]))
         if row.rowcount == 0:
             return error.error_non_exist_user_id(buyer_id)
         # 删除代付订单，看是否重复付款
@@ -153,8 +166,8 @@ class Buyer():
         # 加入已付款订单表
         timenow = datetime.utcnow()
         self.session.execute(
-            "INSERT INTO new_order_paid(order_id, buyer_id,seller_id,price,status,pt) VALUES('%s', '%s','%s',%d,'%s',:timenow);" % (
-                order_id, buyer_id, seller_id, price, 0),{'timenow':timenow})
+            "INSERT INTO new_order_paid(order_id, buyer_id,store_id,price,status,pt) VALUES('%s', '%s','%s',%d,'%s',:timenow);" % (
+                order_id, buyer_id, store_id, price, 0),{'timenow':timenow})
         self.session.commit()
 
         return 200, "ok"
@@ -164,11 +177,76 @@ class Buyer():
             "SELECT status,buyer_id FROM new_order_paid WHERE order_id = '%s'" % (order_id,)).fetchone()
         if row is None:
             return error.error_invalid_order_id(order_id)
-        if row[0] != 1:
+        if row[0] ==0:
             return 522, "book hasn't been sent to costumer"
+        if row[0] ==2:
+            return 523, "book has been received"
         if row[1] != buyer_id:
             return error.error_authorization_fail()
         self.session.execute(
             "UPDATE new_order_paid set status=2 where order_id = '%s' ;" % (order_id))
         self.session.commit()
         return 200, "ok"
+
+    def search_order(self, buyer_id):
+        if not self.check_user(buyer_id):
+            code, mes = error.error_non_exist_user_id(buyer_id)
+            return code, mes, " "
+        ret=[]
+        #已付款
+        records=self.session.execute(
+            " SELECT new_order_detail.order_id,title,new_order_detail.price,count,status,pt,new_order_paid.price "
+            "FROM new_order_paid,new_order_detail,book WHERE book.book_id=new_order_detail.book_id and "
+            "new_order_paid.order_id=new_order_detail.order_id and new_order_paid.buyer_id = '%s' order by new_order_detail.order_id" % (buyer_id)).fetchall()
+        if len(records)!=0:
+            #上一条记录的order id
+            order_id_previous = records[0][0]
+            statusmap = ['未发货', '已发货', '已收货']
+            details=[]
+            for i in range(len(records)):
+                record=records[i]
+                #现在的order id
+                order_id_current=record[0]
+                #同一个订单
+                if order_id_current==order_id_previous :
+                    details.append({'title':record[1],'price':record[2],'count':record[3]})
+                else:
+                    status=records[i-1][4]
+                    ret.append({'order_id':order_id_previous,'status':statusmap[status],'time':json.dumps(records[i-1][5],cls=DateEncoder),'total_price':records[i-1][6],'detail':details})
+                    details = []
+                    details.append({'title': record[1], 'price': record[2], 'count': record[3]})
+                order_id_previous=order_id_current
+            status= records[- 1][4]
+            ret.append({'order_id': order_id_previous, 'status': statusmap[status], 'time': json.dumps(records[- 1][5],cls=DateEncoder),'total_price':records[i-1][6],
+                        'detail': details})
+        # 未付款
+        records = self.session.execute(
+            "SELECT new_order_detail.order_id,title,new_order_detail.price,count,pt,new_order_pend.price "
+            "FROM new_order_pend,new_order_detail,book WHERE book.book_id=new_order_detail.book_id and "
+            "new_order_pend.order_id=new_order_detail.order_id and buyer_id = '%s'" % (buyer_id)).fetchall()
+        if len(records)!=0:
+            #上一条记录的order id
+            order_id_previous = records[0][0]
+            details=[]
+            for i in range(len(records)):
+                record=records[i]
+                #现在的order id
+                order_id_current=record[0]
+                #同一个订单
+                if order_id_current==order_id_previous :
+                    details.append({'title':record[1],'price':record[2],'count':record[3]})
+                else:
+                    ret.append({'order_id':order_id_previous,'status':'未付款','time':json.dumps(records[i-1][4],cls=DateEncoder),'total_price':records[i-1][5],'detail':details})
+                    details = []
+                    details.append({'title': record[1], 'price': record[2], 'count': record[3]})
+                order_id_previous=order_id_current
+            ret.append({'order_id': order_id_previous, 'status':'未付款', 'time': json.dumps(records[- 1][4],cls=DateEncoder),'total_price':records[i-1][5],
+                        'detail': details})
+        if len(ret) != 0:
+            return 200, 'ok', ret
+        else:
+            return 200, 'ok', " "
+
+
+
+

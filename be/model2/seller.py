@@ -123,12 +123,14 @@ class Seller():
 
     def send_books(self,seller_id,order_id):
         row = self.session.execute(
-            "SELECT status,seller_id FROM new_order_paid WHERE order_id = '%s'" % (order_id,)).fetchone()
+            "SELECT status,store_id FROM new_order_paid  WHERE order_id = '%s'" % (order_id,)).fetchone()
         if row is None:
             return error.error_invalid_order_id(order_id)
         if row[0]!=0:
             return 521,'books has been sent to costumer'
-        if row[1]!=seller_id:
+        row = self.session.execute(
+            "SELECT user_id FROM user_store WHERE store_id = '%s';" % (row[1],)).fetchone()
+        if row[0]!=seller_id:
             return error.error_authorization_fail()
         self.session.execute(
             "UPDATE new_order_paid set status=1 where order_id = '%s' ;" % ( order_id))

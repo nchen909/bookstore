@@ -6,10 +6,12 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
-# engine = create_engine('postgresql://postgres:990814@localhost/bookstore')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
+#engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
+
 
 Base = declarative_base()
+
 
 # String长度可能需要做修改
 # 用户表
@@ -28,11 +30,12 @@ class Store(Base):
     store_id = Column(String(128), ForeignKey('user_store.store_id'), nullable=False, index = True)
     book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False, index = True)
     stock_level = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False) # 售价
+    price = Column(Integer, nullable=False)  # 售价
     __table_args__ = (
         PrimaryKeyConstraint('store_id', 'book_id'),
         {},
     )
+
 
 class Book(Base):
     __tablename__ = 'book'
@@ -44,7 +47,7 @@ class Book(Base):
     translator = Column(Text)
     pub_year = Column(Text)
     pages = Column(Integer)
-    original_price = Column(Integer) # 原价
+    original_price = Column(Integer)  # 原价
     currency_unit = Column(String(16))
     binding = Column(Text)
     isbn = Column(Text)
@@ -85,6 +88,7 @@ class New_order_cancel(Base):
     price = Column(Integer, nullable=False)
     pt = Column(DateTime, nullable=False)
 
+
 # 已付款订单
 class New_order_paid(Base):
     __tablename__ = 'new_order_paid'
@@ -93,7 +97,7 @@ class New_order_paid(Base):
     store_id = Column(String(128), ForeignKey('user_store.store_id'), nullable=False)
     price = Column(Integer, nullable=False)
     pt = Column(DateTime, nullable=False)
-    status = Column(Integer, nullable=False) # 0为待发货，1为已发货，2为已收货
+    status = Column(Integer, nullable=False)  # 0为待发货，1为已发货，2为已收货
 
 
 # 订单中的书本信息
@@ -108,6 +112,7 @@ class New_order_detail(Base):
         {},
     )
 
+
 def init():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
@@ -116,6 +121,7 @@ def init():
     session.commit()
     # 关闭session
     session.close()
+
 
 def add_info():
     DBSession = sessionmaker(bind=engine)
@@ -186,3 +192,4 @@ if __name__ == "__main__":
     init()
     # 加入信息
     add_info()
+
