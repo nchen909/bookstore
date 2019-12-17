@@ -4,7 +4,8 @@ from flask import jsonify
 from be.model2.buyer import Buyer
 import threading, multiprocessing
 bp_buyer = Blueprint("buyer", __name__, url_prefix="/buyer")
-
+import simplejson
+import json
 
 @bp_buyer.route("/new_order", methods=["POST"])
 def new_order():
@@ -50,3 +51,12 @@ def send_books():
     code, message = b.receive_books(user_id, order_id)
 
     return jsonify({"message": message}), code
+
+@bp_buyer.route("/search_order", methods=["POST"])
+def search_order():
+    user_id: str = request.json.get("buyer_id")
+
+    b = Buyer()
+    code, message,ret = b.search_order(user_id)
+    print(json.dumps(ret))
+    return jsonify({"message": message,"history record": ret}), code
