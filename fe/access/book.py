@@ -54,7 +54,7 @@ from datetime import datetime,time
 
 # 连接数据库legend 记得修改这个！！！
 # engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/Bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
 Base = declarative_base()
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -289,8 +289,8 @@ class BookDB:
         bookdb.send_info_to_db_multipool(0, bookdb.get_book_count())#count=100 or 整张表
 if __name__ == '__main__':
 
-    bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
-    # bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
+    # bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
+    bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
     print(bookdb.get_book_count())
     # for i in bookdb.get_book_info(0,bookdb.get_book_count()):
     #     print(i.tags)
