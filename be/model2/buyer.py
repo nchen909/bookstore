@@ -247,6 +247,41 @@ class Buyer():
         else:
             return 200, 'ok', " "
 
-
-
-
+    def cancel(self,buyer_id, order_id):
+        if not self.check_user(buyer_id):
+            code, mes = error.error_non_exist_user_id(buyer_id)
+            return code, mes
+        #是否属于未付款订单
+        store = self.session.execute("Select store_id,price FROM new_order_pend WHERE order_id = '%s' and buyer_id='%s'" % (order_id,buyer_id)).fetchone()
+        if store is not None:
+            store_id=store[0]
+            price=store[1]
+            row = self.session.execute("DELETE FROM new_order_pend WHERE order_id = '%s'" % (order_id,))
+        else:
+            # 是否属于已付款且未发货订单
+            order_info = self.session.execute(
+                "Select store_id,price FROM new_order_paid WHERE order_id = '%s' and buyer_id='%s' and status='0'" % (order_id,buyer_id)).fetchone()
+            if order_info is not None:
+                store_id = order_info[0]
+                price = order_info[1]
+                self.session.execute("DELETE FROM new_order_paid WHERE order_id = '%s' and status='0'" % (order_id,))
+                # 卖家减钱
+                user_id = self.session.execute(
+                    "SELECT user_id FROM user_store WHERE store_id = '%s';" % (order_info[0],)).fetchone()
+                self.session.execute(
+                    "UPDATE usr set balance = balance - %d WHERE user_id = '%s'" % (order_info[1], user_id[0]))
+                #买家加钱
+                self.session.execute(
+                    "UPDATE usr set balance = balance + %d WHERE user_id = '%s'" % (order_info[1], buyer_id))
+            else:
+                #无法取消
+                return error.error_invalid_order_id(order_id)
+        timenow = datetime.utcnow()
+        self.session.execute(
+            "INSERT INTO new_order_cancel(order_id, buyer_id,store_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
+                order_id, buyer_id, store_id, price), {'timenow': timenow})
+        #加库存
+        self.session.execute(
+                    "Update store Set stock_level = stock_level +  count from new_order_detail Where new_order_detail.book_id = store.book_id and store.store_id = '%s' and new_order_detail.order_id = '%s'" % (store_id,order_id))
+        self.session.commit()
+        return 200, 'ok'

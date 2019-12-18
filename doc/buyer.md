@@ -255,3 +255,40 @@ Status Code:
 ]  
 
 ```
+
+
+
+## 取消订单（人为）
+
+#### URL：
+POST http://[address]/buyer/cancel_order
+
+#### Request
+Headers:
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+token | string | 登录产生的会话标识 | N
+##### Body:
+```json
+{
+  "buyer_id": "user_id",
+  "order_id": "$order id$"
+  
+}
+```
+
+##### 属性说明：
+
+key | 类型 | 描述 | 是否可为空
+---|---|---|---
+buyer_id | string | 买家用户ID | N
+order_id | string | 订单ID | N
+
+Status Code:
+
+码 | 描述
+--- | ---
+200 | 取消成功
+511 | 无效用户id
+518 | 无法取消订单
