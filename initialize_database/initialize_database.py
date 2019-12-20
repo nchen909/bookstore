@@ -48,7 +48,7 @@ class Book(Base):
     pub_year = Column(Text)
     pages = Column(Integer)
     original_price = Column(Integer)  # 原价
-    currency_unit = Column(String(16))
+    currency_unit = Column(Text)
     binding = Column(Text)
     isbn = Column(Text)
     author_intro = Column(Text)
@@ -144,11 +144,12 @@ def add_info():
                         store_id = '王掌柜的书店')
     A_Store2 = User_store(user_id = '王掌柜',
                         store_id = '王掌柜的进口书店')
-    Book1 = Book(book_id = 0,
-                title='数据结构')
-    Book2 = Book(book_id=1,
-                title='PRML')
-    session.add_all([A_Store1, A_Store2, Book1, Book2])
+    # Book1 = Book(book_id = 0,
+    #             title='数据结构')
+    # Book2 = Book(book_id=1,
+    #             title='PRML')
+    # session.add_all([A_Store1, A_Store2, Book1, Book2])
+    session.add_all([A_Store1, A_Store2])
     session.commit()
 
     StoreA = Store(store_id = '王掌柜的书店',

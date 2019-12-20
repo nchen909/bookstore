@@ -55,8 +55,8 @@ from datetime import datetime,time
 
 # 连接数据库legend 记得修改这个！！！
 # engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-# engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
-engine = create_engine('postgresql://postgres:1@localhost:5432/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
+# engine = create_engine('postgresql://postgres:1@localhost:5432/bookstore')
 Base = declarative_base()
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -71,7 +71,7 @@ class Book(Base):
     pub_year = Column(Text)
     pages = Column(Integer)
     original_price = Column(Integer) # 原价
-    currency_unit = Column(String(16))
+    currency_unit = Column(Text)
     binding = Column(Text)
     isbn = Column(Text)
     author_intro = Column(Text)
@@ -90,8 +90,8 @@ def init():
 class BookDB:
     def __init__(self, large: bool = False):
         parent_path = os.path.dirname(os.path.dirname(__file__))
-        self.db_s = os.path.join(parent_path, "data/book.db")
-        self.db_l = os.path.join(parent_path, "data/book_lx.db")
+        self.db_s = os.path.join(parent_path, "fe/data/book.db")
+        self.db_l = os.path.join(parent_path, "fe/data/book_lx.db")
         if large:
             self.book_db = self.db_l
         else:
@@ -291,15 +291,16 @@ class BookDB:
         bookdb.send_info_to_db_multipool(0, bookdb.get_book_count())#count=100 or 整张表
 if __name__ == '__main__':
 
-    bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
-    # bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
+    # bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
+    bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
+    # 单进程1033.8140s 多进程1035.624s 无任何速度提升
     print(bookdb.get_book_count())
     # for i in bookdb.get_book_info(0,bookdb.get_book_count()):
     #     print(i.tags)
     init()
     import time
     start = time.time()
-    bookdb.send_info()
-    # bookdb.send_info_multipool()#多进程
+    # bookdb.send_info()
+    bookdb.send_info_multipool()#多进程
     end = time.time()
     print (end-start)
