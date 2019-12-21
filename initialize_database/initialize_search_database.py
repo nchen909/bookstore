@@ -8,7 +8,11 @@ import psycopg2
 from datetime import datetime, time
 
 import jieba.analyse
+from jieba import cut_for_search
 import re
+
+import time
+import datetime
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
 engine = create_engine(
@@ -30,7 +34,7 @@ class Book(Base):
     pub_year = Column(Text)
     pages = Column(Integer)
     original_price = Column(Integer)  # 原价
-    currency_unit = Column(String(16))
+    currency_unit = Column(Text)
     binding = Column(Text)
     isbn = Column(Text)
     author_intro = Column(Text)
@@ -80,16 +84,16 @@ class Search_author(Base):
 
 
 # 搜索目录表
-class Search_content(Base):
-    __tablename__ = 'search_content'
-    search_id = Column(Integer, nullable=False)
-    content = Column(Text, nullable=False)
-    book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False)
+# class Search_content(Base):
+#     __tablename__ = 'search_content'
+#     search_id = Column(Integer, nullable=False)
+#     content = Column(Text, nullable=False)
+#     book_id = Column(Integer, ForeignKey('book.book_id'), nullable=False)
 
-    __table_args__ = (
-        PrimaryKeyConstraint('search_id', 'content'),
-        {},
-    )
+#     __table_args__ = (
+#         PrimaryKeyConstraint('search_id', 'content'),
+#         {},
+#     )
 
 
 # 搜索书本内容表
@@ -153,6 +157,7 @@ def insert_author():
 
         else:
             tmp = re.sub(r'[\(\[\{（【][^)）】]*[\)\]\{\】\）]\s?', '', tmp)
+            tmp = re.sub(r'[^\w\s]', '', tmp)
             length = len(tmp)
             for k in range(1, length + 1):
                 if tmp[k - 1] == '':
@@ -181,13 +186,21 @@ def insert_title():
     for i in row:
         tmp = i.title
         # print(tmp)
-
         tmp = re.sub(r'[\(\[\{（【][^)）】]*[\)\]\{\】\）]\s?', '', tmp)
-        length = len(tmp)
-        for k in range(1, length + 1):
-            if tmp[k - 1] == '':
+        tmp = re.sub(r'[^\w\s]', '', tmp)
+        # 处理空标题
+        if len(tmp) == 0:
+            continue
+        # 英文分词
+        if tmp[0].isalpha():
+            seg_list = tmp.split()
+        # 中文分词
+        else:
+            # 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+            seg_list = cut_for_search(tmp)
+        for j in seg_list:
+            if j == "":
                 continue
-            j = tmp[:k]
             max_num = session.execute(
                 "SELECT MAX(search_id) FROM search_title WHERE title = '%s';" %
                 (j, )).fetchone()
@@ -203,49 +216,35 @@ def insert_title():
     session.commit()
 
 
-def insert_content():
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    Base.metadata.create_all(engine)
-    row = session.execute("SELECT book_id, content FROM book;").fetchall()
-    for i in row:
-        tmp = i.content
-        if tmp == None:
-            j = '内容不详'
-            max_num = session.execute(
-                "SELECT MAX(search_id) FROM search_content WHERE content = '%s';"
-                % (j, )).fetchone()
-            max_num = max_num[0]
-            if max_num == None:
-                max_num = 0
-            else:
-                max_num += 1
-            # print(max_num, j, i.book_id)
-            session.execute(
-                "INSERT into search_content(search_id, content, book_id) VALUES (%d, '%s', %d)"
-                % (max_num, j, int(i.book_id)))
-
-        else:
-            tmp = tmp.split("\n")
-            for j in tmp:
-                j = re.sub(r'第.*\s\t?', '', j)
-                if j == '· · · · · ·     (' or j == '……':
-                    break
-                if j == "":
-                    continue
-                max_num = session.execute(
-                    "SELECT MAX(search_id) FROM search_content WHERE content = '%s';"
-                    % (j, )).fetchone()
-                max_num = max_num[0]
-                if max_num == None:
-                    max_num = 0
-                else:
-                    max_num += 1
-                # print(max_num, j, i.book_id)
-                session.execute(
-                    "INSERT into search_content(search_id, content, book_id) VALUES (%d, '%s', %d)"
-                    % (max_num, j, int(i.book_id)))
-    session.commit()
+# def insert_content():
+#     DBSession = sessionmaker(bind=engine)
+#     session = DBSession()
+#     Base.metadata.create_all(engine)
+#     row = session.execute("SELECT book_id, content FROM book;").fetchall()
+#     for i in row:
+#         tmp = i.content
+#         if tmp != None:
+#             tmp = tmp.split("\n")
+#             for j in tmp:
+#                 j = re.sub(r'第.*\s\t?', '', j)
+#                 j = re.sub(r'[^\w\s]', '', j)
+#                 if j == '· · · · · ·     (' or j == '……':
+#                     break
+#                 if j == "":
+#                     continue
+#                 max_num = session.execute(
+#                     "SELECT MAX(search_id) FROM search_content WHERE content = '%s';"
+#                     % (j, )).fetchone()
+#                 max_num = max_num[0]
+#                 if max_num == None:
+#                     max_num = 0
+#                 else:
+#                     max_num += 1
+#                 # print(max_num, j, i.book_id)
+#                 session.execute(
+#                     "INSERT into search_content(search_id, content, book_id) VALUES (%d, '%s', %d)"
+#                     % (max_num, j, int(i.book_id)))
+#     session.commit()
 
 
 def insert_book_intro():
@@ -257,6 +256,7 @@ def insert_book_intro():
         tmp = i.book_intro
         if tmp != None:
             # print(tmp)
+            # 采用textrank进行分词
             keywords_textrank = jieba.analyse.textrank(tmp)
             # print(keywords_textrank)
             # keywords_tfidf = jieba.analyse.extract_tags(tmp)
@@ -291,8 +291,10 @@ if __name__ == "__main__":
     # 创建数据库
     init()
     # 插入表
+    start = datetime.datetime.now()
     insert_tags()
     insert_author()
     insert_title()
-    insert_content()
     insert_book_intro()
+    end = datetime.datetime.now()
+    print("耗时{}秒".format((end - start).seconds))
