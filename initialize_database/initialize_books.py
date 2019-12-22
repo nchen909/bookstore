@@ -300,7 +300,7 @@ if __name__ == '__main__':
     init()
     import time
     start = time.time()
-    # bookdb.send_info()
-    bookdb.send_info_multipool()#多进程
+    bookdb.send_info()
+    # bookdb.send_info_multipool()#多进程
     end = time.time()
     print (end-start)

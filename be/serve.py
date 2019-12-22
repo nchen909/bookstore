@@ -7,7 +7,7 @@ from be.view import auth
 from be.view import seller
 from be.view import buyer
 from be.model.store import init_database
-
+from be.model2.buyer import tostop
 bp_shutdown = Blueprint("shutdown", __name__)
 
 
@@ -20,6 +20,7 @@ def shutdown_server():
 
 @bp_shutdown.route("/shutdown")
 def be_shutdown():
+    tostop()
     shutdown_server()
     return "Server shutting down..."
 

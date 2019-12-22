@@ -8,6 +8,46 @@ from be.model2 import error
 import uuid
 import time
 from flask import jsonify
+import threading
+import schedule
+from datetime import timedelta
+to_be_overtime={}
+def overtime_append(key,value):#对to_be_overtime进行操作
+    global to_be_overtime
+    if key in to_be_overtime:
+        to_be_overtime.append(value)
+    else:
+        to_be_overtime[key]=[value]
+
+class TimerClass(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.event = threading.Event()
+
+    def thread(self):
+        # threading.Thread(target=Buyer().auto_cancel(to_be_overtime[(datetime.utcnow() + timedelta(seconds=1)).second])).start()
+        # 上面这个，有利有弊利是超过一秒也能处理 弊是每有任何一次路由访问就要延时开一次线程次数秒
+        Buyer().auto_cancel(to_be_overtime[(datetime.utcnow() + timedelta(seconds=1)).second])
+
+    def run(self):  # 每秒运行一次 将超时订单删去
+        global to_be_overtime
+        # schedule.every().second.do(thread)#每秒开一个线程去auto_cancel,做完的线程自动退出
+        while not self.event.is_set():
+            self.event.wait(1)
+            if (datetime.utcnow() + timedelta(seconds=1)).second in to_be_overtime:
+                self.thread()
+            # schedule.run_pending()
+
+    def cancel_timer(self):
+        self.event.set()
+
+tmr = TimerClass()
+tmr.start()
+
+def tostop():
+    global tmr
+    tmr.cancel_timer()
+
 
 def jwt_encode(user_id: str, terminal: str) -> str:
     encoded = jwt.encode(
@@ -118,6 +158,7 @@ class Buyer():
             self.session.execute(
                 "INSERT INTO new_order_pend(order_id, buyer_id,store_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
                     order_id, user_id, store_id, sum),{'timenow':timenow})
+            overtime_append(timenow.second,order_id)
             self.session.commit()
             return 200, "ok", order_id
         except ValueError:
@@ -169,7 +210,6 @@ class Buyer():
             "INSERT INTO new_order_paid(order_id, buyer_id,store_id,price,status,pt) VALUES('%s', '%s','%s',%d,'%s',:timenow);" % (
                 order_id, buyer_id, store_id, price, 0),{'timenow':timenow})
         self.session.commit()
-
         return 200, "ok"
 
     def receive_books(self, buyer_id, order_id):
@@ -285,3 +325,19 @@ class Buyer():
                     "Update store Set stock_level = stock_level +  count from new_order_detail Where new_order_detail.book_id = store.book_id and store.store_id = '%s' and new_order_detail.order_id = '%s'" % (store_id,order_id))
         self.session.commit()
         return 200, 'ok'
+
+
+    def auto_cancel(self,order_id_list):#自动取消订单
+        #是否属于未付款订单
+        for order_id in order_id_list:
+            store = self.session.execute("Select buyer_id,store_id,price FROM new_order_pend WHERE order_id = '%s'" % (order_id)).fetchone()
+            if store is not None:
+                buyer_id=store[0]
+                store_id=store[1]
+                price=store[2]
+                row = self.session.execute("DELETE FROM new_order_pend WHERE order_id = '%s'" % (order_id,))
+                timenow = datetime.utcnow()
+                self.session.execute(
+                    "INSERT INTO new_order_cancel(order_id, buyer_id,store_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
+                        order_id, buyer_id, store_id, price), {'timenow': timenow})
+                self.session.commit()

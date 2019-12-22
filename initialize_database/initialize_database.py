@@ -7,8 +7,8 @@ import psycopg2
 from datetime import datetime,time
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-# engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
-engine = create_engine('postgresql://postgres:1@localhost:5432/bookstore')
+engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
+# engine = create_engine('postgresql://postgres:1@localhost:5432/bookstore')
 
 Base = declarative_base()
 
@@ -56,7 +56,6 @@ class Book(Base):
     content = Column(Text)
     tags = Column(Text)
     picture = Column(LargeBinary)
-
 
 # 用户商店关系表
 class User_store(Base):
@@ -153,11 +152,11 @@ def add_info():
     session.commit()
 
     StoreA = Store(store_id = '王掌柜的书店',
-                    book_id = 0,
+                    book_id = 1,
                     stock_level=10,
                     price=1000) # 价格单位是分
     StoreB = Store(store_id = '王掌柜的进口书店',
-                    book_id = 1,
+                    book_id = 2,
                     stock_level=10,
                     price=10000)
     session.add_all([StoreA, StoreB])
@@ -170,7 +169,7 @@ def add_info():
                             pt = datetime.now(),
                             status = 0)  # 0为已付款，1为已发货，2为已收货
     Order_detailA = New_order_detail(order_id = 'order1',
-                                    book_id = 0,
+                                    book_id = 1,
                                     count = 2,
                                     price = 2000)
     OrderB = New_order_pend(order_id = 'order2',
@@ -179,7 +178,7 @@ def add_info():
                             price = 10000,
                             pt = datetime.now())
     Order_detailB = New_order_detail(order_id = 'order2',
-                                    book_id = 1,
+                                    book_id = 2,
                                     count = 1,
                                     price = 10000)
     session.add_all([OrderA, Order_detailA, OrderB, Order_detailB])
