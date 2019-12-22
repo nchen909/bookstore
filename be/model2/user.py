@@ -1,3 +1,5 @@
+import base64
+
 import  jwt
 import time
 import sqlalchemy
@@ -97,3 +99,207 @@ class User():
             "UPDATE usr set password = '%s' where user_id = '%s'"%(new_password,user_id), )
         self.session.commit()
         return 200, "ok"
+
+    def search_author(self, author:str,page:int)-> (int,[dict]):#200,'ok',list[{str,str,str,str,list,bytes}]
+        ret=[]
+        # select
+        # title, author, publisher, book_intro, tags, picture
+        # from book where
+        # book_id in
+        # (select book_id from search_tags where tags='小说' and search_id BETWEEN 20 and 30)
+        #已付款
+        records=self.session.execute(
+            " SELECT title,book.author,publisher,book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_author where author='%s' and search_id BETWEEN %d and %d)" % (author,10*page-10,10*page-1)).fetchall()#约对"小说"约0.09s
+        if len(records)!=0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author_ = record[1]
+                publisher = record[2]
+                book_intro =record[3]
+                tags = record[4]
+                picture = record[5]#为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author_, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags,'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+
+    def search_book_intro(self, book_intro:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT title,author,publisher,book.book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_book_intro where book_intro='%s' and search_id BETWEEN %d and %d)" % (
+            book_intro, 10*page-10,10*page-1)).fetchall()  # 约对"小说"约0.09s
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro_ =record[3]
+                tags = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro_,
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+    def search_tags(self, tags:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT title,author,publisher,book_intro,book.tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_tags where tags='%s' and search_id BETWEEN %d and %d)" % (
+            tags, 10*page-10,10*page-1)).fetchall()  # 约对"小说"约0.09s
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro =record[3]
+                tags_ = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+    def search_title(self, title:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT book.title,author,publisher,book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_title where title='%s' and search_id BETWEEN %d and %d)" % (
+            title, 10*page-10,10*page-1)).fetchall()  # 约对"小说"约0.09s
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title_ = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro =record[3]
+                tags = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title_, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+    def search_author_in_store(self, author:str,store_id:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT title,book.author,publisher,book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_author where author='%s') and "
+            "book_id in (select book_id from store where store_id='%s')"
+            "LIMIT 10 OFFSET %d"% (author, store_id,10*page-10)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author_ = record[1]
+                publisher = record[2]
+                book_intro = record[3]
+                tags = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author_, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
+            return 200,  ret
+        else:
+            return 200, []
+    def search_book_intro_in_store(self, book_intro:str,store_id:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT title,author,publisher,book.book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_book_intro where book_intro='%s') and "
+            "book_id in (select book_id from store where store_id='%s')"
+            "LIMIT 10 OFFSET %d"% (book_intro, store_id,10*page-10)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro_ = record[3]
+                tags = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro_,
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+    def search_tags_in_store(self, tags:str,store_id:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT title,author,publisher,book_intro,book.tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_tags where tags='%s') and "
+            "book_id in (select book_id from store where store_id='%s')"
+            "LIMIT 10 OFFSET %d"% (tags, store_id,10*page-10)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro = record[3]
+                tags_ = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200, ret
+        else:
+            return 200,  []
+    def search_title_in_store(self, title:str,store_id:str,page:int)-> (int,[dict]):
+        ret = []
+        records = self.session.execute(
+            " SELECT book.title,author,publisher,book_intro,tags,picture "
+            "FROM book WHERE book_id in "
+            "(select book_id from search_title where title='%s') and "
+            "book_id in (select book_id from store where store_id='%s')"
+            "LIMIT 10 OFFSET %d"% (title, store_id,10*page-10)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+        if len(records) != 0:
+            for i in range(len(records)):
+                record = records[i]
+                title_ = record[0]
+                author = record[1]
+                publisher = record[2]
+                book_intro = record[3]
+                tags = record[4]
+                picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
+                ret.append(
+                    {'title': title_, 'author': author, 'publisher': publisher,
+                     'book_intro': book_intro,
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+            return 200,  ret
+        else:
+            return 200,  []
+    # def search_title_store_id(self, title:str)-> (int,[str]):#前端用  点书名出store_id
+    #     ret = []
+    #     records = self.session.execute(
+    #         " SELECT store_id "
+    #         "FROM store WHERE book_id in "
+    #         "(select book_id from book where title='%s')"% (title)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+    #     return 200, records
+    # def search_pic(self, picture:bytes,page:int):
+    # def search_pic_in_store():

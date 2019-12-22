@@ -71,3 +71,12 @@ tmr.stop()
 
 自己写class去中止（这真tm是个鬼才）
 
+由于自动取消订单需要wait60s，所以测试性能时可以将改测试删去。
+
+在test_new_order.py中
+
+```
+def test_auto_cancel(self):
+```
+
+nginx+反代确保受限只在数据层面

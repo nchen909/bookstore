@@ -10,7 +10,7 @@ class Test_cancel:
     @pytest.fixture(autouse=True)
     def pre_run_initialization(self):
         self.store_id = "test_cancel_store_{}".format(str(uuid.uuid1()))
-        self.seller_id = "test_caqncel_seller_{}".format(str(uuid.uuid1()))
+        self.seller_id = "test_cancel_seller_{}".format(str(uuid.uuid1()))
         self.store_id = "test_cancel_store_id_{}".format(str(uuid.uuid1()))
         self.buyer_id = "test_cancel__buyer_{}".format(str(uuid.uuid1()))
 

@@ -328,9 +328,11 @@ class Buyer():
 
 
     def auto_cancel(self,order_id_list):#自动取消订单
+        exist_order_need_cancel=0
         #是否属于未付款订单
         for order_id in order_id_list:
             store = self.session.execute("Select buyer_id,store_id,price FROM new_order_pend WHERE order_id = '%s'" % (order_id)).fetchone()
+
             if store is not None:
                 buyer_id=store[0]
                 store_id=store[1]
@@ -341,3 +343,5 @@ class Buyer():
                     "INSERT INTO new_order_cancel(order_id, buyer_id,store_id,price,pt) VALUES('%s', '%s','%s',%d,:timenow);" % (
                         order_id, buyer_id, store_id, price), {'timenow': timenow})
                 self.session.commit()
+                exist_order_need_cancel = 1
+        return 'no_such_order' if exist_order_need_cancel==0 else "auto_cancel_done"
