@@ -15,7 +15,9 @@ import time
 import datetime
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-engine = create_engine('postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
+engine = create_engine(
+    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore'
+)
 
 Base = declarative_base()
 
@@ -189,15 +191,20 @@ def insert_title():
         # 处理空标题
         if len(tmp) == 0:
             continue
-        # 英文分词
-        if tmp[0].isalpha():
-            seg_list = tmp.split()
-        # 中文分词
-        else:
-            # 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
-            seg_list = cut_for_search(tmp)
-        for j in seg_list:
-            if j == "":
+
+        # 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+        seg_list = cut_for_search(tmp)
+        sig_list = []
+        tag = 0
+        for k in seg_list:
+            sig_list.append(k)
+            if k == tmp:
+                tag = 1
+        if tag == 0:
+            sig_list.append(tmp)
+
+        for j in sig_list:
+            if j == "" or j == " ":
                 continue
             max_num = session.execute(
                 "SELECT MAX(search_id) FROM search_title WHERE title = '%s';" %
@@ -290,9 +297,9 @@ if __name__ == "__main__":
     init()
     # 插入表
     start = datetime.datetime.now()
-    insert_tags()
-    insert_author()
+    # insert_tags()
+    # insert_author()
     insert_title()
-    insert_book_intro()
+    # insert_book_intro()
     end = datetime.datetime.now()
     print("耗时{}秒".format((end - start).seconds))
