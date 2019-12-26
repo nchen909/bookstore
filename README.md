@@ -45,7 +45,7 @@
 
 ![image-20191214231256923](README.assets/image-20191214231256923.png)
 
-测试覆盖率请暂时移除 
+测试覆盖率请暂时移除 (覆盖率总时间没有代表性因为有延时1min) 
 be\model2\try.py                     20     20      2      0     0%
 be\model\buyer.py                   111    111     48      0     0%
 be\model\db_conn.py                  22     22      6      0     0%
