@@ -45,3 +45,11 @@
 
 ![image-20191214231256923](README.assets/image-20191214231256923.png)
 
+测试覆盖率请暂时移除 
+be\model2\try.py                     20     20      2      0     0%
+be\model\buyer.py                   111    111     48      0     0%
+be\model\db_conn.py                  22     22      6      0     0%
+be\model\error.py                    25     25      0      0     0%
+be\model\seller.py                   49     49     22      0     0%
+be\model\user.py                    117    117     38      0     0%
+

@@ -15,7 +15,7 @@ to_be_overtime={}
 def overtime_append(key,value):#对to_be_overtime进行操作
     global to_be_overtime
     if key in to_be_overtime:
-        to_be_overtime.append(value)
+        to_be_overtime[key].append(value)
     else:
         to_be_overtime[key]=[value]
 
@@ -41,8 +41,9 @@ class TimerClass(threading.Thread):
     def cancel_timer(self):
         self.event.set()
 
-tmr = TimerClass()
-tmr.start()
+tmr = TimerClass()#####################在无需测试自动取消订单test时删去 单独测取消订单请在test.sh中用
+# #coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v  -k fe/test/test_new_order.py --ignore=fe/data
+tmr.start()###################在无需测试自动取消订单test时删去
 
 def tostop():
     global tmr

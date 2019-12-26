@@ -48,7 +48,7 @@ class TestNewOrder:
         assert code != 200
 
     def test_auto_cancel(self):#################此为增加测试auto_cancel的内容 不删的话每个订单都需要wait60s！(一个订单只生成一个test) 最后助教跑可以删！
-        ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=False)
+        ok, buy_book_id_list = self.gen_book.gen(non_exist_book_id=False, low_stock_level=False, max_book_count=1)
         assert ok
         code = self.buyer.auto_cancel(self.store_id + "_x", buy_book_id_list)#会wait60s
         assert code == 'no_such_order'

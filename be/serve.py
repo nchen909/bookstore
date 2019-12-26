@@ -20,7 +20,7 @@ def shutdown_server():
 
 @bp_shutdown.route("/shutdown")
 def be_shutdown():
-    tostop()
+    tostop()############测试不跑自动取消订单请删去
     shutdown_server()
     return "Server shutting down..."
 
