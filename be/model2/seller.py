@@ -109,16 +109,20 @@ class Seller():
         return 200, "ok"
 
     def add_stock_level(self, user_id: str, store_id: str, book_id: str, add_stock_level: int):
-        row = self.session.execute("SELECT user_id FROM user_store WHERE store_id = '%s';" % (store_id,)).fetchone()
-        if row is None:
-            return error.error_non_exist_store_id(store_id)
-        if row.user_id!=user_id:
-            return error.error_non_exist_user_id(user_id)
-        if not self.check_book(book_id):
-            return error.error_non_exist_book_id(book_id)
-        self.session.execute("UPDATE store SET stock_level = stock_level + %d "
-                          "WHERE store_id = '%s' AND book_id = %d"% (add_stock_level, store_id, int(book_id)))
-        self.session.commit()
+        try:
+            row = self.session.execute("SELECT user_id FROM user_store WHERE store_id = '%s';" % (store_id,)).fetchone()
+            if row is None:
+                return error.error_non_exist_store_id(store_id)
+            if row.user_id != user_id:
+                return error.error_non_exist_user_id(user_id)
+            if not self.check_book(book_id):
+                return error.error_non_exist_book_id(book_id)
+            self.session.execute("UPDATE store SET stock_level = stock_level + %d "
+                                 "WHERE store_id = '%s' AND book_id = %d" % (add_stock_level, store_id, int(book_id)))
+            self.session.commit()
+        except ValueError:
+            code, mes = error.error_non_exist_book_id(book_id)
+            return code, mes
         return 200, "ok"
 
     def send_books(self,seller_id,order_id):

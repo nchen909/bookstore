@@ -44,12 +44,11 @@ function pushErr(){
 function push(){
       SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 			echo $SHELL_FOLDER
-			read -p "THE NAME OF COMMIT?:" COMMITNAME
-			if [  -d "/.git" ]; then
+			if [ ! -f ".git" ]; then
         echo "没有git没法push"
         exit
       fi
-
+			read -p "THE NAME OF COMMIT?:" COMMITNAME
 			git add .
 			git commit -m $COMMITNAME
 			commitErr

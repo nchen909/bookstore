@@ -45,7 +45,15 @@
 
 ![image-20191214231256923](README.assets/image-20191214231256923.png)
 
-测试覆盖率请暂时移除 (覆盖率总时间没有代表性因为有延时1min) 
+##测试驱动开发
+即先写测试用例，再实现功能（写函数）
+如test_add_book.py 先写test（助教给定），将self.seller.create_store self.seller.add_book留空，以作为待实现功能
+再如test_search（新建）,将self.auth.search_author留空，后续再实现，这样便先有了程序的框架，结构不会紊乱
+
+重视测试驱动开发、测试逻辑和效果展示 展示时先讲测试再讲功能实现
+##注意事项
+
+测试覆盖率请暂时移除 (覆盖率总时间没有代表性因为有延时1min 即test_new_order.py中test_auto_cancel函数，可以删) 
 be\model2\try.py                     20     20      2      0     0%
 be\model\buyer.py                   111    111     48      0     0%
 be\model\db_conn.py                  22     22      6      0     0%
@@ -53,3 +61,8 @@ be\model\error.py                    25     25      0      0     0%
 be\model\seller.py                   49     49     22      0     0%
 be\model\user.py                    117    117     38      0     0%
 
+## sqlite与postgresql数据传输
+## 全文索引搜素（感知哈希+post拉取superset作图） 取消订单（自定义class起线程）
+## 前端（专家系统）
+## 部署到云端
+## 反代分离负载及nginx
