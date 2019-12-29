@@ -62,9 +62,39 @@ be\model\seller.py                   49     49     22      0     0%
 be\model\user.py                    117    117     38      0     0%
 
 ## sqlite与postgresql数据传输
-## 全文索引搜素（感知哈希+post拉取superset作图） 取消订单（自定义class起线程）
+## 全文索引搜索（感知哈希以图搜图+post拉取superset作图） 取消订单（自定义class起线程）
 ## 前端（专家系统）
 ## 部署到云端
 ## 反代分离负载及nginx
 
 注：由于postgresql的zhparser在全文索引查询优化上也需要新建分词索引，所以手工创建索引也可
+
+Google 以图搜图的原理，其中的获取图片 hash 值的方法就是 AHash。
+
+每张图片都可以通过某种算法得到一个 hash 值，称为图片指纹，两张指纹相近的图片可以认为是相似图片。
+
+以图搜图的原理就是获取你上传的图片的指纹，和图库的图片指纹对比，查找出最相似的若干张图片展示。
+
+除了以图搜图，图片哈希还可以做什么呢？例如图片检索，重复图片剔除，图片相似度比较等等。
+
+这种哈希算法大概有 4 种：
+
+1，差值哈希：DHash（Difference Hash）
+2，均值哈希：AHash（Average Hash）
+3，感知哈希：PHash（Perceptual Hash）
+4，小波哈希：WHash（Wavelet Hash）
+
+注：常用的是前面三种，DHash、AHash、PHash。其中 PHash 是增强版的 AHash。
+
+感知哈希
+
+step1：缩小图片尺寸
+step2：转为灰度图片
+step3：计算灰度平均值（离散余弦变换DCT）
+step4：比较像素的灰度
+step5：计算哈希值
+step6：对比图片指纹
+
+由于一张图byte64转PIL（imagehash只接受PIL图片）需要约0.05s的时间 ，对于三万张图而言太大，而如果直接存本地，因为服务器的磁盘性能较差，时间将花费在io上，故仅尝试前100张图做感知哈希。
+
+以图搜图 而非ocr

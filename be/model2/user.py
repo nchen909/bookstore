@@ -294,12 +294,65 @@ class User():
             return 200,  ret
         else:
             return 200,  []
-    # def search_title_store_id(self, title:str)-> (int,[str]):#前端用  点书名出store_id
-    #     ret = []
-    #     records = self.session.execute(
-    #         " SELECT store_id "
-    #         "FROM store WHERE book_id in "
-    #         "(select book_id from book where title='%s')"% (title)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
-    #     return 200, records
-    # def search_pic(self, picture:bytes,page:int):
-    # def search_pic_in_store():
+
+    def search_title_store_id(self, title:str)-> (int,[str]):#前端用  点书名出store_id
+        ret = []
+        records = self.session.execute(
+            " SELECT store_id "
+            "FROM store WHERE book_id in "
+            "(select book_id from book where title='%s')"% (title)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+
+        return 200, records
+    def search_pic(self, picture,page=1)-> (int,[(int,int)]):#picture is FileStorage#[(book_id,相似度)]输出前十个
+        print(picture.content_type)
+        if picture and picture.content_type in ['png','image/png']:
+            from .hash import hashTool
+            picture=hashTool.HashTool.file_pil(picture)
+            photo_list=self.session.execute(
+                "SELECT book_id,picture "
+                "FROM book where book_id between 260 and 360"
+                "LIMIT 100").fetchall()
+            thelist=[]
+            for i in range(len(photo_list)):
+                record = photo_list[i]
+                book_id = record[0]
+                picture_ = record[1]
+                # try:
+                picture_=hashTool.HashTool.buffer_pil(picture_)
+                thelist.append((picture_,book_id))
+                # except OSError:
+                #     print(OSError)
+            final=hashTool.HashTool.n_smallest(thelist, picture, 10)
+            print([i[1] for i in final])
+            print([1-hashTool.HashEngine.mean_distance([i],picture)/64 for i in final])
+            return 200,[(i[1],1-hashTool.HashEngine.mean_distance([i],picture)/64) for i in final] #[(book_id,相似度)]
+        else:
+            code, mes = error.error_bad_type()
+            return code, mes
+    def search_pic_in_store(self, picture,store_id:str,page=1):
+        print(picture.content_type)
+        if picture and picture.content_type in ['png','image/png']:
+            from .hash import hashTool
+            picture=hashTool.HashTool.file_pil(picture)
+            photo_list=self.session.execute(
+                "SELECT book_id,picture "
+                "FROM book where book_id in (select book_id from store where store_id='%s')"% (store_id)
+                ).fetchall()
+            thelist=[]
+            for i in range(len(photo_list)):
+                record = photo_list[i]
+                book_id = record[0]
+                picture_ = record[1]
+                # try:
+                picture_=hashTool.HashTool.buffer_pil(picture_)
+                thelist.append((picture_,book_id))
+                # except OSError:
+                #     print(OSError)
+            final=hashTool.HashTool.n_smallest(thelist, picture, 10)
+            print([i[1] for i in final])
+            print([1-hashTool.HashEngine.mean_distance([i],picture)/64 for i in final])
+            return 200,[(i[1],1-hashTool.HashEngine.mean_distance([i],picture)/64) for i in final] #[(book_id,相似度)]
+        else:
+            code, mes = error.error_bad_type()
+            return code, mes
+

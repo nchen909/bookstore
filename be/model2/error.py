@@ -11,7 +11,7 @@ error_code = {
     518: "invalid order id {}",
     519: "not sufficient funds, order id {}",
     520: "duplicate bookid",
-    521: "",
+    521: "bad file type",
     522: "",
     523: "",
     524: "",
@@ -64,5 +64,7 @@ def error_authorization_fail():
 def error_duplicate_bookid():
     return 520, error_code[520]
 
+def error_bad_type():
+    return 521, error_code[521]
 def error_and_message(code, message):
     return code, message

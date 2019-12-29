@@ -118,3 +118,11 @@ def search_title_in_store():
     u = user.User()
     code, message = u.search_title_in_store(title=title,store_id=store_id, page=page)
     return jsonify({"message": message}), code
+
+@bp_auth.route("/search_pic", methods=["POST"])
+def search_pic():
+    picture = request.files.get("picture","")
+    page = request.form.get("page", "")
+    u = user.User()
+    code, message = u.search_pic(picture=picture, page=page)
+    return jsonify({"message": message}), code
