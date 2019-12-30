@@ -26,54 +26,28 @@
     <body>
         <div>
         <div>
-            <a href="/auth/login" style="padding: 8px 16px;"> mini-Taobao</a>
+            <a style="padding: 8px 16px;"> mini-Taobao</a>
             <a onclick="goBack()" style="padding: 8px 16px;">&laquo;Previous</a>
             <a onclick="goForward()" style="padding: 8px 16px;">Next&raquo;</a>
             </div>
         <br>
             <div>
-                <h1>登录</h1>
-                <form id="command_form" method="POST" action="/auth/login">
-                    <div>
-                        <input name="user_id" type="text" placeholder="user_id" value="{{ user_id }}">
-<!--                        <span>@</span>-->
-                        <br>
-                        <input name="password" type="password" placeholder="password" value="{{ password }}" onclick="myFunction1()">
-                        <br>
-                        <span>
-                            <input id="submit1" name="submit" type="submit" value="执行" disabled/>
-                        </span>
-                    </div>
-                </form>
-            </div>
-            <div>
-                <h1>注册</h1>
-                <form id="command_form2" method="POST" action="/auth/register">
-                    <div>
-                        <input name="user_id" type="text" placeholder="user_id" value="{{ user_id }}">
-                        <br>
-                        <input name="password" type="password" placeholder="password" value="{{ password }}" onclick="myFunction2()">
-<!--                        <span>@</span>-->
-                        <br>
-                        <span>
-                            <input id="submit2" name="submit" type="submit" value="执行" disabled/>
-                        </span>
-                    </div>
-                </form>
-            </div>
+                <h1>内容如下，请返回</h1>
+
             <div id="result">
                 <h3>命令结果</h3>
-                <textarea rows="10" cols="50">
+                <textarea rows="40" cols="200">
 {% if result %}
     {{ result }}
 {% endif %}
                 </textarea>
             </div>
+        </div>
+            </div>
+    </body>
             <div class="footer">
             <p style="text-align: center"><a href="http://icp.chinaz.com/info?q=%E6%B2%AAICP%E5%A4%8719047414%E5%8F%B7-1">备案编号 沪ICP备19047414</a></p>
             </div>
-        </div>
-    </body>
 <script>
 function myFunction1() {
 var x = document.getElementById("submit1");

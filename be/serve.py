@@ -44,4 +44,4 @@ def be_run():
     app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
     app.register_blueprint(buyer.bp_buyer)
-    app.run(threaded=True)
+    app.run(threaded=True,host='0.0.0.0',port=5001,debug=True)

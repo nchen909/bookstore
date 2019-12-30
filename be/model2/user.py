@@ -5,6 +5,7 @@ import time
 import sqlalchemy
 from be.model2.db import db
 from be.model2 import error
+from be.model2.hash.hashTool import HashTool
 # encode a json string like:
 #   {
 #       "user_id": [user name],
@@ -121,10 +122,18 @@ class User():
                 book_intro =record[3]
                 tags = record[4]
                 picture = record[5]#为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
-                    {'title': title, 'author': author_, 'publisher': publisher,
-                     'book_intro': book_intro,
-                     'tags': tags,'picture':base64.b64encode(picture).decode('utf-8')})
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
+                    ret.append(
+                        {'title': title, 'author': author_, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title, 'author': author_, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []
@@ -148,7 +157,7 @@ class User():
                 ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro_,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':picture})
             return 200,  ret
         else:
             return 200,  []
@@ -171,7 +180,7 @@ class User():
                 ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags_, 'picture':picture})
             return 200,  ret
         else:
             return 200,  []
@@ -194,7 +203,7 @@ class User():
                 ret.append(
                     {'title': title_, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':picture})
             return 200,  ret
         else:
             return 200,  []
@@ -218,7 +227,7 @@ class User():
                 ret.append(
                     {'title': title, 'author': author_, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
+                     'tags': tags, 'picture':picture})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
             return 200,  ret
         else:
             return 200, []
@@ -242,7 +251,7 @@ class User():
                 ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro_,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':picture})
             return 200,  ret
         else:
             return 200,  []
@@ -266,7 +275,7 @@ class User():
                 ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags_, 'picture':picture})
             return 200, ret
         else:
             return 200,  []
@@ -290,19 +299,12 @@ class User():
                 ret.append(
                     {'title': title_, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':picture})
             return 200,  ret
         else:
             return 200,  []
 
-    def search_title_store_id(self, title:str)-> (int,[str]):#前端用  点书名出store_id
-        ret = []
-        records = self.session.execute(
-            " SELECT store_id "
-            "FROM store WHERE book_id in "
-            "(select book_id from book where title='%s')"% (title)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
 
-        return 200, records
     def search_pic(self, picture,page=1)-> (int,[(int,int)]):#picture is FileStorage#[(book_id,相似度)]输出前十个
         if isinstance(picture,str) or not picture:
             code, mes = error.error_no_file_commit()
@@ -319,9 +321,11 @@ class User():
             for i in range(len(photo_list)):
                 record = photo_list[i]
                 book_id = record[0]
-                picture_ = record[1]
+                picture_ = record[1]#memoryview
+                print(type(picture_))
                 # try:
-                picture_=hashTool.HashTool.buffer_pil(picture_)
+                picture_=hashTool.HashTool.buffer_pil(picture_)#imagehash
+                print('after:',type(picture_))
                 thelist.append((picture_,book_id))
                 # except OSError:
                 #     print(OSError)
@@ -364,5 +368,15 @@ class User():
 
     def gettoken(self, user_id):
         token = self.session.execute("SELECT token from usr where user_id='%s'" % (user_id,)).fetchone()
+        print(user_id)
+        print(token)
         return token[0]
 
+    def search_title_store_id(self, title:str)-> (int,[str]):#前端用  点书名出store_id
+        ret = []
+        records = self.session.execute(
+            " SELECT store_id "
+            "FROM store WHERE book_id in "
+            "(select book_id from book where title='%s')"% (title)).fetchall()  # 约对"小说"+"store_id=x"约0.09s storeid时间忽略不计
+
+        return 200, records

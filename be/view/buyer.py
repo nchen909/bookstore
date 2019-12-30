@@ -29,7 +29,7 @@ def new_order():
             books[i] = {"id": int(a_[0]), "count": int(a_[1])}
         else:
             code, mes = error.error_wrong_input()
-            return code, mes
+            return jsonify({"message": mes}), code
     id_and_count = []
     print(books)
     print(type(books))
@@ -45,10 +45,10 @@ def new_order():
 
 @bp_buyer.route("/payment", methods=["POST"])
 def payment():
-    u=User()
-    user_id = request.form.get("user_id")
-    if request.headers.get("token")!=u.gettoken(user_id):
-        return redirect('/auth/login')
+    # u=User()
+    # user_id = request.form.get("user_id")
+    # if request.headers.get("token")!=u.gettoken(user_id):
+    #     return redirect('/auth/login')
     user_id: str = request.form.get("user_id")
     order_id: str = request.form.get("order_id")
     password: str = request.form.get("password")
@@ -59,10 +59,11 @@ def payment():
 
 @bp_buyer.route("/add_funds", methods=["POST"])
 def add_funds():
-    u=User()
-    user_id = request.form.get("user_id")
-    if request.headers.get("token")!=u.gettoken(user_id):
-        return redirect('/auth/login')
+    # u=User()
+    # user_id = request.form.get("user_id")
+    # if request.headers.get("token")!=u.gettoken(user_id):
+    #     return redirect('/auth/login')
+    user_id: str = request.form.get("user_id")
     password = request.form.get("password")
     add_value = int(request.form.get("add_value"))
     b = Buyer()
@@ -71,10 +72,10 @@ def add_funds():
 
 @bp_buyer.route("/receive_books", methods=["POST"])
 def send_books():
-    u=User()
-    user_id = request.form.get("buyer_id")
-    if request.headers.get("token")!=u.gettoken(user_id):
-        return redirect('/auth/login')
+    # u=User()
+    # user_id = request.form.get("buyer_id")
+    # if request.headers.get("token")!=u.gettoken(user_id):
+    #     return redirect('/auth/login')
     user_id: str = request.form.get("buyer_id")
     order_id: str = request.form.get("order_id")
 
@@ -85,10 +86,10 @@ def send_books():
 
 @bp_buyer.route("/search_order", methods=["POST"])
 def search_order():
-    u=User()
-    user_id = request.form.get("buyer_id")
-    if request.headers.get("token")!=u.gettoken(user_id):
-        return redirect('/auth/login')
+    # u=User()
+    # user_id = request.form.get("buyer_id")
+    # if request.headers.get("token")!=u.gettoken(user_id):
+    #     return redirect('/auth/login')
     user_id: str = request.form.get("buyer_id")
 
     b = Buyer()
@@ -98,10 +99,10 @@ def search_order():
 
 @bp_buyer.route("/cancel_order", methods=["POST"])
 def cancel():
-    u=User()
-    user_id = request.form.get("buyer_id")
-    if request.headers.get("token")!=u.gettoken(user_id):
-        return redirect('/auth/login')
+    # u=User()
+    # user_id = request.form.get("buyer_id")
+    # if request.headers.get("token")!=u.gettoken(user_id):
+    #     return redirect('/auth/login')
     user_id: str = request.form.get("buyer_id")
     order_id: str = request.form.get("order_id")
     b = Buyer()

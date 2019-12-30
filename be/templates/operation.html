@@ -3,8 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style type="text/css">
+        html{height:100%;}
+        body{min-height:100%;margin:0;padding:0;position:relative;}
+        .header{background-color: #ffe4c4;}
+        .main{padding-bottom:100px;background-color: #bdb76b;}/* main的padding-bottom值要等于或大于footer的height值 */
+        .footer{position:absolute;bottom:0;width:100%;height:100px;}
+    </style>
+    <style>
+        a {
+    text-decoration: none;
+    display: inline-block;
+        }
+
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
 </head>
     <body>
+    <div>
+            <a href="/auth/login" style="padding: 8px 16px;"> mini-Taobao</a>
+            <a onclick="goBack()" style="padding: 8px 16px;">&laquo;Previous</a>
+            <a onclick="goForward()" style="padding: 8px 16px;">Next&raquo;</a>
+            </div>
+        <br>
         <div>
             <h1>用户{{ user_id }}，您好</h1>
         </div>
@@ -63,7 +88,7 @@
             </form>
             <br>
         </div>
-                <div>
+        <div>
             <form method="post" action="/buyer/cancel_order" enctype="multipart/form-data">
                 <label>
                     <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
@@ -170,11 +195,92 @@
         <div>
             <h2>卖家操作</h2>
         </div>
-        <div>
-            <h2>搜索操作</h2>
+    <div>
+            <form method="post" action="/seller/create_store" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="创建店铺" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
         </div>
         <div>
-            <h2>老子不玩了（注销操作）</h2>
+            <form method="post" action="/seller/add_book" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <textarea  rows="5" cols="40" placeholder="购买清单  格式:字段如original_title 空格 值  多属性请输入多行  id和price为必须字段！" name="book_info" style="margin-top:15px;"></textarea>
+                    <input type="text" class="txt_input" placeholder="库存数" name="stock_level" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="添加书本信息" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+        <form method="post" action="/seller/add_stock_level" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="书本id" name="book_id" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="增加库存量" name="add_stock_level" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="新增库存" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+    <div>
+        <form method="post" action="/seller/send_books" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="seller_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="发货" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <h2>搜索操作</h2>
+            <form action="/auth/search_all" method="post" enctype="multipart/form-data">
+                <input type="checkbox" name="isstore" value="1" />是否店铺内搜索<br />
+                <input type="text" class="txt_input" placeholder="店铺id" name="store_id" style="margin-top:15px;"/><br />
+                <input type="radio" name="author_button" value="1" checked="checked" /> 搜索作家
+                <input type="text" class="txt_input" placeholder="作家" name="author" style="margin-top:15px;"/><br />
+                <input type="radio" name="book_intro_button" value="1" /> 搜索书本信息
+                <input type="text" class="txt_input" placeholder="书本信息" name="book_intro" style="margin-top:15px;"/><br />
+                <input type="radio" name="tags_button" value="1" /> 搜索标签
+                <input type="text" class="txt_input" placeholder="标签" name="tags" style="margin-top:15px;"/><br />
+                <input type="radio" name="title_button" value="1" /> 搜索题目
+                <input type="text" class="txt_input" placeholder="题目" name="title" style="margin-top:15px;"/><br />
+                复选框待做<br />
+                <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;"/>
+                <input type="submit" value="确认搜索" class="button-new" style="margin-top:15px;" ><br /><br /><br /><br />
+            </form>
+            <form action="/auth/search_pic" method="post" enctype="multipart/form-data">
+                <input type="file" name="picture" accept="image/png" />以图搜图(只接受png格式)<br />
+                <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;" />
+                <input type="submit" value="确认搜索" class="button-new" style="margin-top:15px;">
+            </form>
+        </div>
+        <div>
+            <h2>AUTH</h2>
+            <form id="command_form" method="POST" action="/auth/logout">
+                <div>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                    <span>
+                        <input name="submit" type="submit" value="注销">
+                    </span>
+                </div>
+            </form>
+        <form method="post" action="/auth/password" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="旧密码" name="old_password" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="新密码" name="new_password" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="修改密码" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
         </div>
 
 <div id="result">
@@ -223,4 +329,16 @@
             <p style="text-align: center"><a href="http://icp.chinaz.com/info?q=%E6%B2%AAICP%E5%A4%8719047414%E5%8F%B7-1">备案编号 沪ICP备19047414</a></p>
         </div>
     </body>
+            <div class="footer">
+            <p style="text-align: center"><a href="http://icp.chinaz.com/info?q=%E6%B2%AAICP%E5%A4%8719047414%E5%8F%B7-1">备案编号 沪ICP备19047414</a></p>
+            </div>
+<script>
+function goBack() {
+    window.history.back();
+}
+function goForward() {
+    window.history.forward();
+}
+
+</script>
 </html>

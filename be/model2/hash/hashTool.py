@@ -14,11 +14,23 @@ from tqdm import tqdm
 
 class HashTool:
     """生成图片hash相关的工具函数集"""
+    @staticmethod
+    def get_pil(picture):
+        """BufferReader转base64转PIL变大小"""
+        # image=base64.b64encode(picture)
+        image=picture
+        image = BytesIO(image)
+        image = Image.open(image)
+        # return image.thumbnail((100, 60))
+        # if image.format =='JPEG':
+        #     raise TypeError
+        return image.resize((100,60))
 
     @staticmethod
     def file_pil(picture):
-        """BufferReader转base64转PIL转哈希"""
+        """输入的文件转base64转PIL转哈希"""
         image = Image.open(picture)
+        # image=picture
         return HashTool.get_file_hash(image)
 
     @staticmethod
