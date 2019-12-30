@@ -12,8 +12,8 @@ error_code = {
     519: "not sufficient funds, order id {}",
     520: "duplicate bookid",
     521: "bad file type",
-    522: "",
-    523: "",
+    522: "no file commit",
+    523: "wrong input",
     524: "",
     525: "",
     526: "",
@@ -66,5 +66,12 @@ def error_duplicate_bookid():
 
 def error_bad_type():
     return 521, error_code[521]
+
+def error_no_file_commit():
+    return 522, error_code[522]
+
+def error_wrong_input():
+    return 523, error_code[523]
+
 def error_and_message(code, message):
     return code, message

@@ -98,3 +98,29 @@ step6：对比图片指纹
 由于一张图byte64转PIL（imagehash只接受PIL图片）需要约0.05s的时间 ，对于三万张图而言太大，而如果直接存本地，因为服务器的磁盘性能较差，时间将花费在io上，故仅尝试前100张图做感知哈希。
 
 以图搜图 而非ocr
+
+
+
+不需要输入terminal：terminal = request.json.get("terminal", request.headers.get("User-Agent",""))#terminal如果不上传会默认设为User-Agent
+
+
+
+多分支管理：主分支只有测试 developercn分支前端
+
+
+
+不需要用户操作时验证身份了 如果用户携带的token不对 强制登出（触发方法如用户利用爬虫访问登陆后的界面，或不登录直接访问登陆后的html，所有操作都无法执行并会强制跳转到登录界面）或token超时
+
+
+
+反向代理（ppt说明）保证延迟基本只在数据库层面 而不在多个用户访问同一服务器的延迟
+
+![image-20191230013051681](README.assets/image-20191230013051681.png)
+
+（以上说明多线程）
+
+
+
+token：使用JWT方式生成  而验证用户是否登录 靠用户每次操作时将cookie中的token以header形式发送
+
+logout会销毁token

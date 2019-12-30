@@ -141,3 +141,4 @@ class Seller():
         self.session.commit()
         return  200, "ok"
 
+

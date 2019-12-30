@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>显示UserAgent</title>
+</head>
+<body style="text-align:center">
+    <div id="td1">11111</div>
+    <div id="userAgentDiv" ></div>
+    <script type="text/javascript">
+
+        document.getElementById("userAgentDiv").innerHTML = navigator.userAgent;
+// some movie data
+var movies = {
+    'title': movie_title,
+    'release_date': movie_release_date
+    }
+
+$.ajax({
+url: Flask.url_for('my_function'),
+type: 'POST',
+data: JSON.stringify(movies),   // converts js value to JSON string
+})
+.done(function(result){     // on success get the return object from server
+    console.log(result)     // do whatever with it. In this case see it in console
+}
+      var df=new Date('2019-04-01');
+
+      var year=df.getFullYear();
+
+      $("#td1").text(year+" J2EE开发");
+      var x=1;
+      document.write(x);
+let myVar = 'Hello';
+$.post('http://localhost:5000/getjs', {myVar}, function(){
+    // Do something once posted.
+})
+    </script>
+</body>
+</html>

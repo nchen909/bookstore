@@ -304,6 +304,9 @@ class User():
 
         return 200, records
     def search_pic(self, picture,page=1)-> (int,[(int,int)]):#picture is FileStorage#[(book_id,相似度)]输出前十个
+        if isinstance(picture,str) or not picture:
+            code, mes = error.error_no_file_commit()
+            return code, mes
         print(picture.content_type)
         if picture and picture.content_type in ['png','image/png']:
             from .hash import hashTool
@@ -330,6 +333,9 @@ class User():
             code, mes = error.error_bad_type()
             return code, mes
     def search_pic_in_store(self, picture,store_id:str,page=1):
+        if isinstance(picture,str) or not picture:
+            code, mes = error.error_no_file_commit()
+            return code, mes
         print(picture.content_type)
         if picture and picture.content_type in ['png','image/png']:
             from .hash import hashTool
@@ -355,4 +361,8 @@ class User():
         else:
             code, mes = error.error_bad_type()
             return code, mes
+
+    def gettoken(self, user_id):
+        token = self.session.execute("SELECT token from usr where user_id='%s'" % (user_id,)).fetchone()
+        return token[0]
 
