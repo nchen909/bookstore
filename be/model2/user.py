@@ -122,7 +122,7 @@ class User():
                 book_intro =record[3]
                 tags = record[4]
                 picture = record[5]#为达到搜索速度 得到未decode的byte 待前端时解析
-<<<<<<< HEAD
+
                 try:
                     from .hash import hashTool
                     print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
@@ -135,18 +135,7 @@ class User():
                         {'title': title, 'author': author_, 'publisher': publisher,
                          'book_intro': book_intro,
                          'tags': tags, 'picture': ''})
-=======
-                if picture!=None:
-                    ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
-                    ret.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
-                         'book_intro': book_intro,
-                         'tags': tags})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+
             return 200,  ret
         else:
             return 200,  []
@@ -167,22 +156,18 @@ class User():
                 book_intro_ =record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
+                try:
+                    from .hash import hashTool
                     ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
-<<<<<<< HEAD
+
                      'book_intro': book_intro_,
-                     'tags': tags, 'picture':picture})
-=======
-                     'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
+                     'tags': tags, 'picture':hashTool.HashTool.get_pil(picture)})
+                except :
                     ret.append(
                         {'title': title, 'author': author, 'publisher': publisher,
-                         'book_intro': book_intro,
-                         'tags': tags})
-
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'book_intro': book_intro_,
+                         'tags': tags, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []
@@ -202,20 +187,18 @@ class User():
                 book_intro =record[3]
                 tags_ = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
-                    ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-<<<<<<< HEAD
-                     'tags': tags_, 'picture':picture})
-=======
-                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
                     ret.append(
                         {'title': title, 'author': author, 'publisher': publisher,
                          'book_intro': book_intro,
-                         'tags': tags_})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'tags': tags_,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags_, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []
@@ -235,20 +218,18 @@ class User():
                 book_intro =record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
                     ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-<<<<<<< HEAD
-                     'tags': tags, 'picture':picture})
-=======
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
-                    ret.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
+                        {'title': title_, 'author': author, 'publisher': publisher,
                          'book_intro': book_intro,
-                         'tags': tags})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'tags': tags,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title_, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []
@@ -269,20 +250,18 @@ class User():
                 book_intro = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)', hashTool.HashTool.get_pil(picture))
                     ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-<<<<<<< HEAD
-                     'tags': tags, 'picture':picture})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
-=======
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
-                    ret.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
+                        {'title': title, 'author': author_, 'publisher': publisher,
                          'book_intro': book_intro,
-                         'tags': tags})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'tags': tags, 'picture': hashTool.HashTool.get_pil(picture)})
+                except:
+                    ret.append(
+                        {'title': title, 'author': author_, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags, 'picture': ''})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
             return 200,  ret
         else:
             return 200, []
@@ -303,21 +282,18 @@ class User():
                 book_intro_ = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
-                    ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-<<<<<<< HEAD
-                     'book_intro': book_intro_,
-                     'tags': tags, 'picture':picture})
-=======
-                     'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
                     ret.append(
                         {'title': title, 'author': author, 'publisher': publisher,
-                         'book_intro': book_intro,
-                         'tags': tags})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'book_intro': book_intro_,
+                         'tags': tags,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro_,
+                         'tags': tags, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []
@@ -338,20 +314,18 @@ class User():
                 book_intro = record[3]
                 tags_ = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
-                    ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-<<<<<<< HEAD
-                     'tags': tags_, 'picture':picture})
-=======
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
                     ret.append(
                         {'title': title, 'author': author, 'publisher': publisher,
                          'book_intro': book_intro,
-                         'tags': tags})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'tags': tags_,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags_, 'picture': ''})
             return 200, ret
         else:
             return 200,  []
@@ -372,20 +346,18 @@ class User():
                 book_intro = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                if picture!=None:
+                try:
+                    from .hash import hashTool
+                    print('hashTool.HashTool.buffer_pil(picture)',hashTool.HashTool.get_pil(picture))
                     ret.append(
-                    {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro,
-<<<<<<< HEAD
-                     'tags': tags, 'picture':picture})
-=======
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
-                else:
-                    ret.append(
-                        {'title': title, 'author': author, 'publisher': publisher,
+                        {'title': title_, 'author': author, 'publisher': publisher,
                          'book_intro': book_intro,
-                         'tags': tags})
->>>>>>> c636ec947c53d764cb261d59e08794fdb6a6ed9a
+                         'tags': tags,'picture':hashTool.HashTool.get_pil(picture)})
+                except :
+                    ret.append(
+                        {'title': title_, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags, 'picture': ''})
             return 200,  ret
         else:
             return 200,  []

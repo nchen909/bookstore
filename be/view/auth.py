@@ -83,7 +83,8 @@ def search_pic():
     # picture=Image.open(picture)
     print(type(picture))
     print(type(request.files["picture"]))
-    page = int(request.form.get("page", ""))
+    page = request.form.get("page", 1)
+    page = 1 if not page else int(page)
     u = user.User()
     code, message = u.search_pic(picture=picture, page=page)
     print(picture)
@@ -124,19 +125,15 @@ def search_all():
     isstore = request.values.getlist("istore")
     store_id = request.form.get("store_id")
     print("isstore:", isstore)
-    page = int(request.form.get("page", ""))
+    page = request.form.get("page", 1)
+    page = 1 if not page else int(page)
     print("page:", page)
-    author_button = request.values.get("author_button")
-    book_intro_button = request.values.get("book_intro_button")
-    tags_button = request.values.get("tags_button")
-    title_button = request.values.get("title_button")
-    print("author_button:", author_button)
-    print("book_intro_button:", book_intro_button)
+    button = request.values.get("button")
     if not (page):
         code, mes = error.error_wrong_input()
         return jsonify({"message": mes}), code
     if not (isstore):  # 全文搜索
-        if (author_button):
+        if (button=="author"):
             author = request.form.get("author")
             print("author:", author)
             if not (author):
@@ -144,21 +141,21 @@ def search_all():
                 return jsonify({"message": mes}), code
             else:
                 return search_author(author, page)
-        elif (book_intro_button):
+        elif (button=="book_intro"):
             book_intro = request.form.get("book_intro")
             if not (book_intro):
                 code, mes = error.error_wrong_input()
                 return jsonify({"message": mes}), code
             else:
                 return search_book_intro(book_intro, page)
-        elif (tags_button):
+        elif (button=="tags"):
             tags = request.form.get("tags")
             if not (tags):
                 code, mes = error.error_wrong_input()
                 return jsonify({"message": mes}), code
             else:
                 return search_tags(tags, page)
-        elif (title_button):
+        elif (button=="title"):
             title = request.form.get("title")
             if not (title):
                 code, mes = error.error_wrong_input()
@@ -172,28 +169,28 @@ def search_all():
         if not (store_id):
             code, mes = error.error_wrong_input()
             return jsonify({"message": mes}), code
-        if (author_button):
+        if (button=="author"):
             author = request.form.get("author")
             if not (author):
                 code, mes = error.error_wrong_input()
                 return jsonify({"message": mes}), code
             else:
                 return search_author_in_store(author, page,store_id)
-        elif (book_intro_button):
+        elif (button=="book_intro"):
             book_intro = request.form.get("book_intro")
             if not (book_intro):
                 code, mes = error.error_wrong_input()
                 return jsonify({"message": mes}), code
             else:
                 return search_book_intro_in_store(book_intro, page,store_id)
-        elif (tags_button):
+        elif (button=="tags"):
             tags = request.form.get("tags")
             if not (tags):
                 code, mes = error.error_wrong_input()
                 return jsonify({"message": mes}), code
             else:
                 return search_tags_in_store(tags, page,store_id)
-        elif (title_button):
+        elif (button=="title"):
             title = request.form.get("title")
             if not (title):
                 code, mes = error.error_wrong_input()

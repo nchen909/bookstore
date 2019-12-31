@@ -244,22 +244,22 @@
             <form action="/auth/search_all" method="post" enctype="multipart/form-data">
                 <input type="checkbox" name="isstore" value="1" />是否店铺内搜索<br />
                 <input type="text" class="txt_input" placeholder="店铺id" name="store_id" style="margin-top:15px;"/><br />
-                <input type="radio" name="author_button" value="1" checked="checked" /> 搜索作家
+                <input type="radio" name="button" value="author" checked="checked" /> 搜索作家
                 <input type="text" class="txt_input" placeholder="作家" name="author" style="margin-top:15px;"/><br />
-                <input type="radio" name="book_intro_button" value="1" /> 搜索书本信息
+                <input type="radio" name="button" value="book_intro" /> 搜索书本信息
                 <input type="text" class="txt_input" placeholder="书本信息" name="book_intro" style="margin-top:15px;"/><br />
-                <input type="radio" name="tags_button" value="1" /> 搜索标签
+                <input type="radio" name="button" value="tags" /> 搜索标签
                 <input type="text" class="txt_input" placeholder="标签" name="tags" style="margin-top:15px;"/><br />
-                <input type="radio" name="title_button" value="1" /> 搜索题目
+                <input type="radio" name="button" value="title" /> 搜索题目
                 <input type="text" class="txt_input" placeholder="题目" name="title" style="margin-top:15px;"/><br />
                 复选框待做<br />
                 <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;"/>
                 <input type="submit" value="确认搜索" class="button-new" style="margin-top:15px;" ><br /><br /><br /><br />
             </form>
             <form action="/auth/search_pic" method="post" enctype="multipart/form-data">
-                <input type="file" name="picture" accept="image/png" />以图搜图(只接受png格式)<br />
+                <input type="file" name="picture" accept="image/png" onchange="myFunction()"/>以图搜图(只接受png格式)<br />
                 <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;" />
-                <input type="submit" value="确认搜索" class="button-new" style="margin-top:15px;">
+                <input id='submit'  type="submit" value="确认搜索" class="button-new" style="margin-top:15px;" disabled>
             </form>
         </div>
         <div>
@@ -333,6 +333,10 @@
             <p style="text-align: center"><a href="http://icp.chinaz.com/info?q=%E6%B2%AAICP%E5%A4%8719047414%E5%8F%B7-1">备案编号 沪ICP备19047414</a></p>
             </div>
 <script>
+    function myFunction() {
+var x = document.getElementById("submit");
+x.disabled = false;
+}
 function goBack() {
     window.history.back();
 }

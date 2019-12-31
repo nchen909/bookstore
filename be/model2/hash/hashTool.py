@@ -24,7 +24,7 @@ class HashTool:
         # return image.thumbnail((100, 60))
         # if image.format =='JPEG':
         #     raise TypeError
-        return image.resize((100,60))
+        return image.resize((200,120))
 
     @staticmethod
     def file_pil(picture):
