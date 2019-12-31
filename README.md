@@ -6,7 +6,7 @@ https://noname.asia 主分支是整个后端 前端在分支developercn
 ## 第一部分——数据库设计
 
 ### ER图
-
+git 
 ![avatar](./picture/ER.png)
 
 1. 实体类和子类  
