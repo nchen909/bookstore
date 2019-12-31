@@ -1,4 +1,4 @@
-https://noname.asia
+https://noname.asia 主分支是整个后端 前端在分支developercn
 # bookstore
 ## 第一次更新
 1. 运行脚本命令
