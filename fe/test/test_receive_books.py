@@ -50,7 +50,7 @@ class Test_receive_books:
         code = self.buyer.receive_books(self.buyer_id,self.order_id + 's')
         assert code != 200
 
-    def test_repeat_send_books(self):
+    def test_repeat_receive_books(self):
         code = self.buyer.receive_books(self.buyer_id,self.order_id)
         assert code == 200
         code = self.buyer.receive_books(self.buyer_id,self.order_id )

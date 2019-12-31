@@ -4,23 +4,6 @@ import sqlalchemy
 from be.model2.db import db
 from be.model2 import error
 import json
-def jwt_encode(user_id: str, terminal: str) -> str:
-    encoded = jwt.encode(
-        {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
-        key=user_id,
-        algorithm="HS256",
-    )
-    return encoded.decode("utf-8")
-
-# decode a JWT to a json string like:
-#   {
-#       "user_id": [user name],
-#       "terminal": [terminal code],
-#       "timestamp": [ts]} to a JWT
-#   }
-def jwt_decode(encoded_token, user_id: str) -> str:
-    decoded = jwt.decode(encoded_token, key=user_id, algorithms="HS256")
-    return decoded
 
 class Seller():
     def __init__(self):
@@ -68,6 +51,7 @@ class Seller():
             book_id=int(book_id)
 
             row = self.session.execute("SELECT book_id FROM book WHERE book_id = '%s';" % (book_id,)).fetchone()
+
             if row is None:
                 book = json.loads(book_json_str)
                 thelist = []  # 由于没有列表类型，故使用将列表转为text的办法
@@ -102,6 +86,8 @@ class Seller():
                          'binding': book['binding'], 'isbn': book['isbn'], 'author_intro': book['author_intro'],
                          'book_intro': book['book_intro'],
                          'content': book['content'], 'tags': book['tags']})
+
+
             self.session.execute("INSERT into store(store_id, book_id, stock_level,price) VALUES ('%s', %d,  %d,%d)"% (store_id, int(book_id), stock_level,price))
             self.session.commit()
         except sqlalchemy.exc.IntegrityError:

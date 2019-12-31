@@ -121,10 +121,16 @@ class User():
                 book_intro =record[3]
                 tags = record[4]
                 picture = record[5]#为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
-                    {'title': title, 'author': author_, 'publisher': publisher,
+                if picture!=None:
+                    ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags,'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
             return 200,  ret
         else:
             return 200,  []
@@ -145,10 +151,17 @@ class User():
                 book_intro_ =record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
+                if picture!=None:
+                    ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro_,
+                     'book_intro': book_intro,
                      'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
+
             return 200,  ret
         else:
             return 200,  []
@@ -168,10 +181,16 @@ class User():
                 book_intro =record[3]
                 tags_ = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
+                if picture!=None:
+                    ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
                      'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags_})
             return 200,  ret
         else:
             return 200,  []
@@ -191,10 +210,16 @@ class User():
                 book_intro =record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
-                    {'title': title_, 'author': author, 'publisher': publisher,
+                if picture!=None:
+                    ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
                      'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
             return 200,  ret
         else:
             return 200,  []
@@ -215,10 +240,16 @@ class User():
                 book_intro = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
-                    {'title': title, 'author': author_, 'publisher': publisher,
+                if picture!=None:
+                    ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})#有byte类会倒是JSON unserializeable 所以需要base64.encode一下 可能会浪费时间
             return 200,  ret
         else:
             return 200, []
@@ -239,10 +270,16 @@ class User():
                 book_intro_ = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
+                if picture!=None:
+                    ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
-                     'book_intro': book_intro_,
+                     'book_intro': book_intro,
                      'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
             return 200,  ret
         else:
             return 200,  []
@@ -263,10 +300,16 @@ class User():
                 book_intro = record[3]
                 tags_ = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
+                if picture!=None:
+                    ret.append(
                     {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
-                     'tags': tags_, 'picture':base64.b64encode(picture).decode('utf-8')})
+                     'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
             return 200, ret
         else:
             return 200,  []
@@ -287,10 +330,16 @@ class User():
                 book_intro = record[3]
                 tags = record[4]
                 picture = record[5]  # 为达到搜索速度 得到未decode的byte 待前端时解析
-                ret.append(
-                    {'title': title_, 'author': author, 'publisher': publisher,
+                if picture!=None:
+                    ret.append(
+                    {'title': title, 'author': author, 'publisher': publisher,
                      'book_intro': book_intro,
                      'tags': tags, 'picture':base64.b64encode(picture).decode('utf-8')})
+                else:
+                    ret.append(
+                        {'title': title, 'author': author, 'publisher': publisher,
+                         'book_intro': book_intro,
+                         'tags': tags})
             return 200,  ret
         else:
             return 200,  []
