@@ -16,8 +16,7 @@ import datetime
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
 engine = create_engine(
-    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore'
-)
+    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
 
 Base = declarative_base()
 
@@ -297,9 +296,9 @@ if __name__ == "__main__":
     init()
     # 插入表
     start = datetime.datetime.now()
-    # insert_tags()
-    # insert_author()
+    insert_tags()
+    insert_author()
     insert_title()
-    # insert_book_intro()
+    insert_book_intro()
     end = datetime.datetime.now()
     print("耗时{}秒".format((end - start).seconds))

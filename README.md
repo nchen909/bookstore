@@ -1,3 +1,4 @@
+https://noname.asia
 # bookstore
 ## 第一次更新
 1. 运行脚本命令
