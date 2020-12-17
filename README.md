@@ -6,7 +6,6 @@ http://47.101.151.73:5001/auth/login 主分支已加入前端(be\model2\template
 ## 第一部分——数据库设计
 
 ### ER图
-git 
 ![avatar](./picture/ER.png)
 
 1. 实体类和子类  
@@ -493,7 +492,7 @@ git
 
 反向代理：使用多台服务器，保证多用户访问时分离负载至每台服务器，并且可以隐藏服务器的地址，更加安全。
 
-### **一些小问题**
+### 一些小问题
 
 ![image-20191231181542707](Bookstore_项目报告_陈诺_印张悦_王子玥小组.assets/image-20191231181542707.png)
 
@@ -531,75 +530,12 @@ pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示�
 
 ## 链接
 
-项目前端链接位于https://noname.asia，若无法访问请使用http://47.101.151.73:5001/auth/login。github地址：https://github.com/1012598167/bookstore
+项目前端链接位于https://mathskiller909.com(暂无法使用20201217)，若无法访问请使用http://47.101.151.73:5001/auth/login。github地址：https://github.com/1012598167/bookstore
 
-<<<<<<< HEAD
 ## 分工
 
 陈诺：git版本控制、自动取消订单、搜索(专家系统+以图搜图)、分离负载、前端、反代、可视化、报告撰写 贡献度33%  
 印张悦：数据库设计、搜索图书功能设计、分页查询设计优化、表初始化、吞吐量测试和优化、性能分析和优化、报告撰写、ppt制作 贡献度33%  
 王子玥：基本功能实现，拓展功能中卖家发货、买家收货、查询历史购买记录和手动取消订单功能实现、报告撰写、吞吐量测试 贡献度33%  
-=======
-## sqlite与postgresql数据传输
-## 全文索引搜索（感知哈希以图搜图+post拉取superset作图） 取消订单（自定义class起线程）
-## 前端（专家系统）
-## 部署到云端
-## 反代分离负载及nginx
 
-注：由于postgresql的zhparser在全文索引查询优化上也需要新建分词索引，所以手工创建索引也可
-
-Google 以图搜图的原理，其中的获取图片 hash 值的方法就是 AHash。
-
-每张图片都可以通过某种算法得到一个 hash 值，称为图片指纹，两张指纹相近的图片可以认为是相似图片。
-
-以图搜图的原理就是获取你上传的图片的指纹，和图库的图片指纹对比，查找出最相似的若干张图片展示。
-
-除了以图搜图，图片哈希还可以做什么呢？例如图片检索，重复图片剔除，图片相似度比较等等。
-
-这种哈希算法大概有 4 种：
-
-1，差值哈希：DHash（Difference Hash）
-2，均值哈希：AHash（Average Hash）
-3，感知哈希：PHash（Perceptual Hash）
-4，小波哈希：WHash（Wavelet Hash）
-
-注：常用的是前面三种，DHash、AHash、PHash。其中 PHash 是增强版的 AHash。
-
-感知哈希
-
-step1：缩小图片尺寸
-step2：转为灰度图片
-step3：计算灰度平均值（离散余弦变换DCT）
-step4：比较像素的灰度
-step5：计算哈希值
-step6：对比图片指纹
-
-由于一张图byte64转PIL（imagehash只接受PIL图片）需要约0.05s的时间 ，对于三万张图而言太大，而如果直接存本地，因为服务器的磁盘性能较差，时间将花费在io上，故仅尝试前100张图做感知哈希。
-
-以图搜图 而非ocr
-
-
-
-不需要输入terminal：terminal = request.json.get("terminal", request.headers.get("User-Agent",""))#terminal如果不上传会默认设为User-Agent
-
-
-
-多分支管理：主分支只有测试 developercn分支前端
-
-
-
-不需要用户操作时验证身份了 如果用户携带的token不对 强制登出（触发方法如用户利用爬虫访问登陆后的界面，或不登录直接访问登陆后的html，所有操作都无法执行并会强制跳转到登录界面）或token超时
-
-
-
-反向代理（ppt说明）保证延迟基本只在数据库层面 而不在多个用户访问同一服务器的延迟
-
-![image-20191230013051681](README.assets/image-20191230013051681.png)
-
-（以上说明多线程）
-
-
-:
-token：使用JWT方式生成  而验证用户是否登录 靠用户每次操作时将cookie中的token以header形式发送
-
-logout会销毁token
+注：若有ppt等需求，或代码问题，可在[issue](https://github.com/1012598167/bookstore/issues)中提出或联系chennuo909@163.com
