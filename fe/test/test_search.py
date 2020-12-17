@@ -14,10 +14,10 @@ class TestSearch:
         self.auth = auth.Auth(conf.URL)
         self.author = "test_author_{}".format(str(uuid.uuid1()))
         self.book_intro = "test_book_intro_{}".format(str(uuid.uuid1()))
-        self.tags = "test_tags_{}".format(str(uuid.uuid1()))
-        self.title = "test_title_{}".format(str(uuid.uuid1()))
+        self.tags = random.choice(["小说","励志"])
+        self.title = random.choice(["很","在"])
         self.store_id = "test_store_id_{}".format(str(uuid.uuid1()))
-        self.page = random.randint(1,10)
+        self.page = random.randint(1,2)
 
         yield
 

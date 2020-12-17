@@ -21,7 +21,7 @@ class User(Base):
     password = Column(String(128), nullable=False)
     balance = Column(Integer, nullable=False)
     token = Column(String(400), nullable=False)
-    terminal = Column(String(64), nullable=False)
+    terminal = Column(String(256), nullable=False)
 
 
 # 商店表（含书本信息）

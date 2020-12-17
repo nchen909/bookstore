@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style type="text/css">
+        html{height:100%;}
+        body{min-height:100%;margin:0;padding:0;position:relative;}
+        .header{background-color: #ffe4c4;}
+        .main{padding-bottom:100px;background-color: #bdb76b;}/* main的padding-bottom值要等于或大于footer的height值 */
+        .footer{position:absolute;bottom:0;width:100%;height:100px;}
+    </style>
+    <style>
+        a {
+    text-decoration: none;
+    display: inline-block;
+        }
+
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+    <body>
+    <div>
+            <a href="/auth/login" style="padding: 8px 16px;"> mini-Taobao</a>
+            <a onclick="goBack()" style="padding: 8px 16px;">&laquo;Previous</a>
+            <a onclick="goForward()" style="padding: 8px 16px;">Next&raquo;</a>
+            </div>
+        <br>
+        <div>
+            <h1>用户{{ user_id }}，您好</h1>
+        </div>
+        <div>
+            <h2>买家操作</h2>
+        </div>
+        <div>
+            <form method="post" action="/buyer/new_order" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <textarea  rows="5" cols="40" placeholder="购买清单  格式:书本id 空格 个数(不输入则为1)  多种书请输入多行" name="books" style="margin-top:15px;"></textarea>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="下单" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/buyer/payment" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
+                    <input type="password" class="txt_input" placeholder="密码" name="password" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="付款" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/buyer/add_funds" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="金额" name="add_value" style="margin-top:15px;"/>
+                    <input type="password" class="txt_input" placeholder="密码" name="password" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="充值" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/buyer/receive_books" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="buyer_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="收货" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/buyer/search_order" enctype="multipart/form-data">
+                <label>
+                    <input type="hidden" name="buyer_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="搜历史订单" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/buyer/cancel_order" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="buyer_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="取消订单" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+<!--        <div>
+            <form method="get" action="/user/{{ username }}/travel" enctype="multipart/form-data">
+            <input type="submit" value="寻宝" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="get" action="/user/{{ username }}/browse" enctype="multipart/form-data">
+            <input type="submit" value="浏览市场" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/sell" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="price" name="price" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="挂牌宝物" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/buy" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="price" name="price" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="seller" name="sell" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="买宝物" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/back" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="price" name="price" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="seller" name="sell" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="收回宝物" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="get" action="/user/{{ username }}/final" enctype="multipart/form-data">
+            <input type="submit" value="获得枭雄金印" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/wear" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="穿戴" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/unwear" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="脱掉" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/see" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="money/pocket/lucky/wear/onmarket" name="attr" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="查看自己的某个属性" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/user/{{ username }}/see" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="treasure" name="treasure" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="property/value/level" name="attr" style="margin-top:15px;"/>
+                </label>
+            <input type="submit" value="查看宝物的某个属性" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="get" action="/user/{{ username }}/shutdown" enctype="multipart/form-data">
+            <input type="submit" value="关闭服务器" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+-->
+        <div>
+            <h2>卖家操作</h2>
+        </div>
+    <div>
+            <form method="post" action="/seller/create_store" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="创建店铺" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <form method="post" action="/seller/add_book" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <textarea  rows="5" cols="40" placeholder="购买清单  格式:字段如original_title 空格 值  多属性请输入多行  id和price为必须字段！" name="book_info" style="margin-top:15px;"></textarea>
+                    <input type="text" class="txt_input" placeholder="库存数" name="stock_level" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="添加书本信息" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+        <form method="post" action="/seller/add_stock_level" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="店铺名" name="store_id" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="书本id" name="book_id" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="增加库存量" name="add_stock_level" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="新增库存" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+    <div>
+        <form method="post" action="/seller/send_books" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="订单号" name="order_id" style="margin-top:15px;"/>
+                    <input type="hidden" name="seller_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="发货" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+        <div>
+            <h2>搜索操作</h2>
+            <form action="/auth/search_all" method="post" enctype="multipart/form-data">
+                <input type="checkbox" name="isstore" value="1" />是否店铺内搜索<br />
+                <input type="text" class="txt_input" placeholder="店铺id" name="store_id" style="margin-top:15px;"/><br />
+                <input type="radio" name="button" value="author" checked="checked" /> 搜索作家
+                <input type="text" class="txt_input" placeholder="作家" name="author" style="margin-top:15px;"/><br />
+                <input type="radio" name="button" value="book_intro" /> 搜索书本信息
+                <input type="text" class="txt_input" placeholder="书本信息" name="book_intro" style="margin-top:15px;"/><br />
+                <input type="radio" name="button" value="tags" /> 搜索标签
+                <input type="text" class="txt_input" placeholder="标签" name="tags" style="margin-top:15px;"/><br />
+                <input type="radio" name="button" value="title" /> 搜索题目
+                <input type="text" class="txt_input" placeholder="题目" name="title" style="margin-top:15px;"/><br />
+                复选框待做<br />
+                <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;"/>
+                <input type="submit" value="确认搜索" class="button-new" style="margin-top:15px;" ><br /><br /><br /><br />
+            </form>
+            <form action="/auth/search_pic" method="post" enctype="multipart/form-data">
+                <input type="file" name="picture" accept="image/png" onchange="myFunction()"/>以图搜图(只接受png格式)<br />
+                <input type="text" class="txt_input" placeholder="页数" name="page" style="margin-top:15px;" />
+                <input id='submit'  type="submit" value="确认搜索" class="button-new" style="margin-top:15px;" disabled>
+            </form>
+        </div>
+        <div>
+            <h2>AUTH</h2>
+            <form id="command_form" method="POST" action="/auth/logout">
+                <div>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                    <span>
+                        <input name="submit" type="submit" value="注销">
+                    </span>
+                </div>
+            </form>
+        <form method="post" action="/auth/password" enctype="multipart/form-data">
+                <label>
+                    <input type="text" class="txt_input" placeholder="旧密码" name="old_password" style="margin-top:15px;"/>
+                    <input type="text" class="txt_input" placeholder="新密码" name="new_password" style="margin-top:15px;"/>
+                    <input type="hidden" name="user_id" value={{ user_id }}>
+                </label>
+            <input type="submit" value="修改密码" class="button-new" style="margin-top:15px;"/>
+            </form>
+            <br>
+        </div>
+
+<div id="result">
+                <h3>命令结果</h3>
+                <textarea rows="10" cols="50">
+{% if result %}
+    {{ result }}
+{% endif %}
+                </textarea>
+                <br>
+        </div>
+    <div id="introduction">
+                <h3>功能介绍</h3>
+                <textarea rows="10" cols="200">
+一个提供网上购书功能的网站后端。
+网站支持书商在上面开商店，购买者可能通过网站购买。
+买家和买家都可以注册自己的账号。
+一个买家可以开一个或多个网上商店， 买家可以为自已的账户充值，在任意商店购买图书。
+支持下单->付款->发货->收货，流程。
+
+1.对应接口的功能
+
+其中包括：
+
+1)用户权限接口，如注册、登录、登出、注销
+
+2)买家用户接口，如充值、下单、付款
+
+3)卖家用户接口，如创建店铺、填加书籍信息及描述、增加库存
+
+2.其它功能
+
+1)实现后续的流程
+发货 -> 收货
+
+2)搜索图书
+用户可以通过关键字搜索，参数化的搜索方式； 如搜索范围包括，题目，标签，目录，内容；全站搜索或是当前店铺搜索。 如果显示结果较大，需要分页 (使用全文索引优化查找)
+
+3)订单状态，订单查询和取消定单
+用户可以查自已的历史订单，用户也可以取消订单。
+取消定单，买家主动地取消定单，如果买家下单经过一段时间超时后，如果买家未付款，定单也会自动取消。
+                </textarea>
+                <br>
+        </div>
+        <div>
+            <p style="text-align: center"><a href="http://icp.chinaz.com/home/info?host=noname.asia">备案编号 沪ICP备19047414-4</a></p>
+        </div>
+    </body>
+            <div class="footer">
+            <p style="text-align: center"><a href="http://icp.chinaz.com/home/info?host=noname.asia">备案编号 沪ICP备19047414-4</a></p>
+            </div>
+<script>
+    function myFunction() {
+var x = document.getElementById("submit");
+x.disabled = false;
+}
+function goBack() {
+    window.history.back();
+}
+function goForward() {
+    window.history.forward();
+}
+
+</script>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style type="text/css">
+        html{height:100%;}
+        body{min-height:100%;margin:0;padding:0;position:relative;}
+        .header{background-color: #ffe4c4;}
+        .main{padding-bottom:100px;background-color: #bdb76b;}/* main的padding-bottom值要等于或大于footer的height值 */
+        .footer{position:absolute;bottom:0;width:100%;height:100px;}
+    </style>
+    <style>
+        a {
+    text-decoration: none;
+    display: inline-block;
+        }
+
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+.small-font{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size:12px;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.2);
+    display: inline-block;
+    width: 2px;
+	height: 0px;
+        }
+        .br { height: 5px; line-height: 0px;}
+.intro{
+    float:right;
+    width:80%;
+}
+.all{width:1800px; height:400px; margin:50px auto; position:relative;}
+    </style>
+</head>
+    <body>
+        <div>
+        <div>
+            <a style="padding: 8px 16px;"> mini-Taobao</a>
+            <a onclick="goBack()" style="padding: 8px 16px;">&laquo;Previous</a>
+            <a onclick="goForward()" style="padding: 8px 16px;">Next&raquo;</a>
+            </div>
+        <br>
+            <div>
+                <h1>内容如下，请点击PREVIOUS返回</h1>
+
+            <div id="result">
+                <h3>命令结果</h3>
+
+
+    {{ body }}
+
+
+            </div>
+        </div>
+            </div>
+    </body>
+            <div class="footer">
+            <p style="text-align: center"><a href="http://icp.chinaz.com/home/info?host=noname.asia">备案编号 沪ICP备19047414-4</a></p>
+            </div>
+<script>
+function myFunction1() {
+var x = document.getElementById("submit1");
+x.disabled = false;
+}
+function myFunction2() {
+var y = document.getElementById("submit2");
+y.disabled = false;
+}
+function goBack() {
+    window.history.back();
+}
+function goForward() {
+    window.history.forward();
+}
+
+</script>
+</html>
