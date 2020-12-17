@@ -539,3 +539,4 @@ pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示�
 王子玥：基本功能实现，拓展功能中卖家发货、买家收货、查询历史购买记录和手动取消订单功能实现、报告撰写、吞吐量测试 贡献度33%  
 
 注：若有ppt等需求，或代码问题，可在[issue](https://github.com/1012598167/bookstore/issues)中提出或联系chennuo909@163.com
+原始作业要求https://github.com/DaSE-DBMS/bookstore.git

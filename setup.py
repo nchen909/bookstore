@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bookstore",
-    version="0.0.1",
-    author="DaSE-DBMS",
-    author_email="DaSE-DBMS@DaSE-DBMS.com",
+    version="1.0.0",
+    author="mathskiller",
+    author_email="chennuo909@163.com",
     description="Buy Books Online",
     long_description=long_description,
     long_description_content_type="text/markdown",
