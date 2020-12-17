@@ -1,4 +1,4 @@
-https://noname.asia 主分支是整个后端 前端在分支developercn
+http://47.101.151.73:5001/auth/login 主分支已加入前端(be\model2\templates仍有部分小问题)(updated 20201217)
 # Bookstore项目报告
 
 陈诺、印张悦、王子玥小组
