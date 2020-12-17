@@ -165,14 +165,14 @@
 
 **seller功能**
 
-1. 创建店铺
+6. 创建店铺
    1. 检查user_id和store_id是否已存在。
    2. 插入用户id，新建店铺store_id至user_store表。  
    
     性能分析：  
     usr表一次根据主键查询，store表一次根据主键查询，store表一次插入。
 
-2. 上架图书
+7. 上架图书
    1. 检查user_id和store_id是否已存在。
    2. 根据book_id从book表查询是否存在对应book。
    3. 若不存在，首先将书本信息插入book表。
@@ -181,14 +181,14 @@
     性能分析：  
     usr表一次根据主键查询，store表一次根据主键查询，book表一次根据主键查询（book表一次插入，可选），store表一次插入。
 
-3. 添加库存
+8. 添加库存
     1. 检查user_id、store_id和book_id是否已存在。
     2. 根据store_id, book_id寻找对应店家书本库存，并在store表中更新库存。  
     
     性能分析：  
     usr表一次根据主键查询，store表一次根据主键查询，一次更新。  
 
-4. 卖家发货
+9. 卖家发货
     1. 根据order_id在new_order_paid表中查询对应的订单状态，店铺id。
     2. 检查订单状态是否为待发货，店铺id与卖家id是否对应。
     3. 若符合条件，则更新订单状态为已发货。
