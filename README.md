@@ -1,6 +1,7 @@
 # Bookstore项目报告
-[![Build Status](https://travis-ci.org/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)
+
 [47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 主分支已加入前端(be\model2\templates仍有部分小问题)(updated 20201217)
+
 陈诺、印张悦、王子玥小组
 
 ## 第一部分——数据库设计
