@@ -6,7 +6,7 @@ class Conf(object):
         elif conf=='local':
             return 'postgresql://postgres:1@localhost:5432/bookstore'
         elif conf=='local_travis':
-            return 'postgresql://postgres:@localhost:5433/bookstore'
+            return 'postgresql://postgres:@localhost:5432/bookstore'
         elif conf=='local_w':
             return 'postgresql://postgres:amyamy@localhost:5433/bookstore'
         elif conf=='local_y':

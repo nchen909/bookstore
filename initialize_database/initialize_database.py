@@ -5,10 +5,10 @@ from sqlalchemy.orm import sessionmaker
 
 import psycopg2
 from datetime import datetime,time
-from config import Conf
+
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine(Conf.get_sql_conf('local_w'))
-engine = create_engine(Conf.get_sql_conf('local_travis'))
+engine = create_engine('postgresql://postgres:@localhost:5432/bookstore')
 #engine = create_engine(Conf.get_sql_conf('local'))
 
 Base = declarative_base()

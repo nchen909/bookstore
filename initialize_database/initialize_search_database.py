@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint, Text, DateTime, Boolean, LargeBinary
 from sqlalchemy.orm import sessionmaker
-from config import Conf
 import psycopg2
 from datetime import datetime, time
 
@@ -15,7 +14,7 @@ import time
 import datetime
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine(Conf.get_sql_conf('local_w'))
-engine = create_engine(Conf.get_sql_conf('local_travis'))
+engine = create_engine('postgresql://postgres:@localhost:5432/bookstore')
 
 Base = declarative_base()
 
