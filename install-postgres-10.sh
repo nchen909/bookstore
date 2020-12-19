@@ -11,4 +11,5 @@ sudo cp /etc/postgresql/{9.6,10}/main/pg_hba.conf
 
 echo "Restarting Postgres 10"
 sudo service postgresql restart
+sudo psql -c 'CREATE ROLE travis SUPERUSER LOGIN CREATEDB;' -U postgres
 sudo psql -c 'create database bookstore;' -U postgres
