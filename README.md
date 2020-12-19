@@ -1,7 +1,10 @@
 # Bookstore项目报告
 
-[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 主分支已加入前端(be\model2\templates仍有部分小问题)(updated 20201217)
-之所以
+[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 主分支未加入前端(updated 20201219)
+
+前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view的内容与master不同 
+
+不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
 CN,WZY,YZY小组
 
 ## 第一部分——数据库设计
@@ -352,6 +355,9 @@ CN,WZY,YZY小组
 由于所有表都建立在关系型数据库postgreSQL上，上述功能都遵循事务的方式进行处理，能够确保Serializable级别的事务隔离，确保ACID。
 
 ### 测试及代码覆盖率
+```bash
+coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
+```
 在实现功能前我们先针对我们要完成的功能编写相应的test case，之后再进行功能的实现，**符合测试驱动开发的方法**，最后所有测试全部通过，符合我们的预期。
 ![avatar](./picture/test.png)
 代码覆盖率达到91%，在如此大的项目中是一个比较高的覆盖率了，而且核心组件buyer.py、seller.py和user.py的覆盖率均大于等于91%。
