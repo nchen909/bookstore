@@ -14,7 +14,7 @@ sudo cp /etc/postgresql/{9.6,10}/main/pg_hba.conf
 
 echo "Restarting Postgres 10"
 sudo service postgresql restart
-sudo find / -name 'postmaster.pid'  2>&1 | grep -v "Permission denied"
+#sudo find / -name 'postmaster.pid'  2>&1 | grep -v "Permission denied"
 #sudo rm /var/ramfs/postgresql/9.6/main/postmaster.pid
 sudo /usr/lib/postgresql/10/bin/pg_ctl -D /var/ramfs/postgresql/10/main -l /var/ramfs/postgresql/10/main/server.log start
 sudo cat /var/ramfs/postgresql/10/main/server.log
