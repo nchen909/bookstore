@@ -1,11 +1,9 @@
 # Bookstore项目报告
 
 [47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 主分支未加入前端(updated 20201219)
-
-前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view的内容与master不同 
-
-不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
-CN,WZY,YZY小组
+	前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view与/be/templates的内容与master不同
+	不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
+	CN,WZY,YZY小组
 
 ## 第一部分——数据库设计
 
