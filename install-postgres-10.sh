@@ -17,7 +17,7 @@ sudo service postgresql restart
 #sudo find / -name 'postmaster.pid'  2>&1 | grep -v "Permission denied"
 #sudo rm /var/ramfs/postgresql/9.6/main/postmaster.pid
 #/usr/lib/postgresql/10/bin/pg_ctl -D /var/ramfs/postgresql/9.6/main -l /var/ramfs/postgresql/9.6/main/server.log start
-sudo cd /var/ramfs/postgresql
-sudo ls
+cd /var/ramfs/postgresql
+ls
 sudo psql -c 'CREATE ROLE travis SUPERUSER LOGIN CREATEDB;' -U postgres
 sudo psql -c 'create database bookstore;' -U postgres
