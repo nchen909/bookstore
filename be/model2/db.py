@@ -8,7 +8,7 @@ class db():
     def __init__(self):
         #engine = create_engine(Conf.get_sql_conf('local_w'))
         #engine = create_engine(Conf.get_sql_conf('local_y'))
-        engine = create_engine(Conf.get_sql_conf('local'))
+        engine = create_engine(Conf.get_sql_conf('ecs'))
         #engine = create_engine(Conf.get_sql_conf('local'))
         Base = declarative_base()
         DBSession = sessionmaker(bind=engine)
