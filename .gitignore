@@ -7,3 +7,4 @@ htmlcov
 **/.idea/
 *.pyc
 *try*
+**/config.py

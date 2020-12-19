@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint, Text, DateTime, Boolean, LargeBinary
 from sqlalchemy.orm import sessionmaker
-
+from config import Conf
 import psycopg2
 from datetime import datetime, time
 
@@ -14,9 +14,8 @@ import re
 import time
 import datetime
 # 连接数据库legend 记得修改这个！！！
-#engine = create_engine('postgresql://postgres:amyamy@localhost:5433/bookstore')
-engine = create_engine(
-    'postgresql://postgres:990814@[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5432/bookstore')
+#engine = create_engine(Conf.get_sql_conf('local_w'))
+engine = create_engine(Conf.get_sql_conf('local_y'))
 
 Base = declarative_base()
 

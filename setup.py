@@ -11,7 +11,7 @@ setuptools.setup(
     description="Buy Books Online",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/DaSE-DBMS/bookstore.git",
+    url="https://github.com/1012598167/bookstore.git",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
