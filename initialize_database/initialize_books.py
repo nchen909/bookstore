@@ -292,7 +292,7 @@ class BookDB:
 if __name__ == '__main__':
 
     # bookdb=BookDB()#单进程0.7148709297180176 多进程2.212113380432129
-    bookdb=BookDB(large=True)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
+    bookdb=BookDB(large=False)#导入整张表 43988数据 还没跑通 不知道多进程会不会比单进程快
     # 单进程1033.8140s 多进程1035.624s 无任何速度提升
     print(bookdb.get_book_count())
     # for i in bookdb.get_book_info(0,bookdb.get_book_count()):

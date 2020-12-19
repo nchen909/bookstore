@@ -79,6 +79,7 @@ hj6q
 bookstore
   |-- be                            mock的后端
         |-- model
+        |-- model2 搜索以图搜图取消订单功能
         |-- view
         |-- ....
   |-- doc                           JSON API

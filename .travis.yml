@@ -25,7 +25,9 @@ script:
   - python initialize_database/initialize_database.py
   - python initialize_database/initialize_search_database.py
   - coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
-
+env:
+  global:
+  - PGPORT=5433
 # Push the results back to codecov
 after_success:
   - coverage combine
