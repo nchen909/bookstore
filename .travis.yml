@@ -10,8 +10,9 @@ install:
   - pip install -r requirements.txt
 services:
   - postgresql
-fore_script:
+before_script:
   - psql -c 'create database bookstore;' -U postgres
+  - cp config/database.yml.travis config/database.yml
 addons:
   postgresql: "12.0"
   apt:

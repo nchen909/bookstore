@@ -1,9 +1,98 @@
 # Bookstore项目报告
 
-[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 主分支未加入前端(updated 20201219)
+演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
+	主分支未加入前端(updated 20201219)
 	前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view与/be/templates的内容与master不同
 	不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
 	CN,WZY,YZY小组
+
+
+## 安装配置
+
+**运行该项目的流程及安装详情请见.travis.yml**
+
+安装python (需要python3.6以上)
+
+安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+执行测试
+
+```bash
+bash script/test.sh
+```
+
+或
+
+```bash
+coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
+```
+
+bookstore/fe/data/book.db中包含测试的数据，从豆瓣网抓取的图书信息， 其DDL为：
+
+```
+create table book
+(
+    id TEXT primary key,
+    title TEXT,
+    author TEXT,
+    publisher TEXT,
+    original_title TEXT,
+    translator TEXT,
+    pub_year TEXT,
+    pages INTEGER,
+    price INTEGER,
+    currency_unit TEXT,
+    binding TEXT,
+    isbn TEXT,
+    author_intro TEXT,
+    book_intro text,
+    content TEXT,
+    tags TEXT,
+    picture BLOB
+);
+```
+
+更多的数据可以从网盘下载，下载地址为，链接：
+
+```
+https://pan.baidu.com/s/1bjCOW8Z5N_ClcqU54Pdt8g
+```
+
+提取码：
+
+```
+hj6q
+```
+
+这份数据同bookstore/fe/data/book.db的schema相同，但是有更多的数据(约3.5GB, 40000+行)
+
+
+## 项目目录结构
+
+```
+bookstore
+  |-- be                            mock的后端
+        |-- model
+        |-- view
+        |-- ....
+  |-- doc                           JSON API
+  |-- fe                            前端代码
+        |-- access
+        |-- bench                   效率测试
+        |-- data                    
+            |-- book.db             sqlite 数据库(book.db，较少量的测试数据)
+            |-- book_lx.db          sqlite 数据库(book_lx.db， 较大量的测试数据，要从网盘下载)
+            |-- scraper.py          从豆瓣爬取的图书信息数据
+        |-- test                    功能性测试（不要修改这里的文件，可以提pull request或bug）
+        |-- conf.py                 测试参数，修改这个文件以适应自己的需要
+        |-- conftest.py             pytest初始化配置，修改这个文件以适应自己的需要
+        |-- ....
+  |-- ....
+```
 
 ## 第一部分——数据库设计
 
@@ -545,3 +634,4 @@ WZY：基本功能实现，拓展功能中卖家发货、买家收货、查询�
 
 注：若有ppt等需求，或代码问题，可在[issue](https://github.com/1012598167/bookstore/issues)中提出或联系chennuo909@163.com
 原始作业要求https://github.com/DaSE-DBMS/bookstore.git
+
