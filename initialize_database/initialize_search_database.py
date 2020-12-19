@@ -15,7 +15,7 @@ import time
 import datetime
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine(Conf.get_sql_conf('local_w'))
-engine = create_engine(Conf.get_sql_conf('local_y'))
+engine = create_engine(Conf.get_sql_conf('local'))
 
 Base = declarative_base()
 
