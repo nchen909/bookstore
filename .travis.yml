@@ -14,7 +14,11 @@ before_script:
   - psql -c 'create database bookstore;' -U postgres
   - cp config/database.yml.travis config/database.yml
 addons:
-  postgresql: "9.6"
+    postgresql: "10"
+    apt:
+        packages:
+            - postgresql-10
+            - postgresql-client-10
 env:
   global:
   - PGPORT=5433
