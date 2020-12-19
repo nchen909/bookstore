@@ -1,4 +1,6 @@
-# Bookstore项目报告
+# Bookstore Postgres数据库项目
+
+Postgres实现类似淘宝书店的功能并进行吞吐量测试，流程可参考.travis.yml
 
 演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
 	主分支未加入前端(updated 20201219)
