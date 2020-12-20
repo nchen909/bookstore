@@ -9,3 +9,4 @@ htmlcov
 *.pyc
 *try*
 **/config.py
+be/model/
