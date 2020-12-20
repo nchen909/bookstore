@@ -1,12 +1,14 @@
 # Bookstore Postgres数据库项目
 
-Postgres实现类似淘宝书店的功能并进行吞吐量测试，流程可参考.travis.yml
+Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，流程可参考.travis.yml
 
 演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
-	主分支未加入前端(updated 20201219)
-	前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view与/be/templates的内容与master不同
-	不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
-	CN,WZY,YZY小组
+
+注：主分支未加入前端(updated 20201219)
+
+前端请去分支[developercn](https://github.com/1012598167/bookstore/tree/developercn)查看，该分支只有/be/view与/be/templates的内容与master不同
+
+不将前端写到master分支的原因是前端使用render_template会无法测覆盖率
 
 
 ## 安装配置
@@ -25,12 +27,6 @@ pip install -r requirements.txt
 
 ```bash
 bash script/test.sh
-```
-
-或
-
-```bash
-coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
 ```
 
 bookstore/fe/data/book.db中包含测试的数据，从豆瓣网抓取的图书信息， 其DDL为：
@@ -446,7 +442,7 @@ bookstore
 
 ### 测试及代码覆盖率
 ```bash
-coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
+bash script/test.sh
 ```
 在实现功能前我们先针对我们要完成的功能编写相应的test case，之后再进行功能的实现，**符合测试驱动开发的方法**，最后所有测试全部通过，符合我们的预期。
 ![avatar](./picture/test.png)
@@ -469,7 +465,7 @@ coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v -
 ![avatar](./picture/Large_separate.png)
 延迟：0.0864秒/笔  
 吞吐量：5笔/秒  
-测试平台：实验室计算机
+测试平台：远程连接实验室计算机
 
 吞吐量修改：  
 处理5万笔订单用时在5分钟以内，如果是这个吞吐量不可能在5分钟之内完成，而且吞吐量并不是逐渐上升到饱和的趋势，始终保持不变。查看代码我们发现吞吐量计算时没有考虑到并发数，正确计算方法应该为：创建订单数量/(创建订单用时/并发数)，更改后在实验室计算机分离负载生成和后端运行结果如下：
@@ -477,6 +473,7 @@ coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v -
 吞吐量逐渐增长至3600笔/秒左右，这个吞吐量比较符合我们的预期，同一秒内两个ok的差值和现在测得的吞吐量十分接近，证明我们的修改比较合理。
 ![avatar](./picture/Large2.png)
 在MacBook Pro 2018平台上我们得到了更好的性能，最后吞吐量接近9000笔/秒，在我们看来这是一个非常不错的结果了^_^。
+
 ## 第三部分——版本控制、分离负载与前端部署
 
 ### 附加功能 图片搜索
@@ -631,9 +628,9 @@ pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示�
 
 ## 分工
 
-CN：git版本控制、自动取消订单、搜索(专家系统+以图搜图)、分离负载、前端、反代、可视化、报告撰写 贡献度33%  
-YZY：数据库设计、搜索图书功能设计、分页查询设计优化、表初始化、吞吐量测试和优化、性能分析和优化、报告撰写、ppt制作 贡献度33%  
-WZY：基本功能实现，拓展功能中卖家发货、买家收货、查询历史购买记录和手动取消订单功能实现、报告撰写、吞吐量测试 贡献度33%  
+CN：git版本控制、自动取消订单、搜索(专家系统+以图搜图)、分离负载、前端、反向代理、可视化、持续集成、报告撰写 
+YZY：数据库设计、搜索图书功能设计、分页查询设计优化、表初始化、吞吐量测试和优化、性能分析和优化、报告撰写、ppt制作
+WZY：基本功能实现，拓展功能中卖家发货、买家收货、查询历史购买记录和手动取消订单功能实现、报告撰写、吞吐量测试
 
 注：若有ppt等需求，或代码问题，可在[issue](https://github.com/1012598167/bookstore/issues)中提出或联系chennuo909@163.com
 原始作业要求https://github.com/DaSE-DBMS/bookstore.git
