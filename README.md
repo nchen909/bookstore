@@ -1,6 +1,6 @@
 # Bookstore Postgres数据库项目
 
-[![Build Status](https://travis-ci.com/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)[![codecov](https://codecov.io/gh/1012598167/bookstore/branch/master/graph/badge.svg?token=8T1NB3GUYR)](https://codecov.io/gh/1012598167/bookstore)
+[![codecov](https://codecov.io/gh/1012598167/bookstore/branch/master/graph/badge.svg?token=8T1NB3GUYR)](https://codecov.io/gh/1012598167/bookstore)
 
 Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，CI-> .travis.yml
 
