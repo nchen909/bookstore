@@ -13,10 +13,13 @@ install:
 sudo: required
 services:
   - postgresql
-addons:
-  postgresql: "9.6"
+#addons:
+#  postgresql: "9.6"
+#before_script:
+#  - bash install-postgres-10.sh
+
 before_script:
-  - bash install-postgres-10.sh
+  - psql -c 'create database bookstore;' -U postgres
 # Run the unit test
 script:
   #- export PATHONPATH=`pwd`
