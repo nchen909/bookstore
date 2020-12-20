@@ -36,3 +36,4 @@ after_success:
   - coverage combine
   - coverage report
   - codecov
+  - bash <(curl -s https://codecov.io/bash)

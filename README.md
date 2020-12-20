@@ -1,5 +1,7 @@
 # Bookstore Postgres数据库项目
 
+[![Build Status](https://travis-ci.com/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)
+
 Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，流程可参考.travis.yml
 
 演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
@@ -369,29 +371,30 @@ bookstore
     而一般我们会使用threading.Timer.start，这样起的线程会在需要终止的时机无法终止（没有标识号，也没有全局变量能充当该线程），这会导致正常运行时无法关闭服务器（每秒至少有一个线程在运作），并且test coverage也将无法正常退出。  
     解决方案：  
     新建线程类，定义方法，在需要终止服务器时调用取消所有的Timer。
+    
      ```python
     import threading
-    import time
-
+import time
+    
     class TimerClass(threading.Thread):
         def __init__(self):
             threading.Thread.__init__(self)
             self.event = threading.Event()
-            self.count = 10
-
+        self.count = 10
+    
         def run(self):
             while self.count > 0 and not self.event.is_set():
                 print (self.count)
                 self.count -= 1
-                self.event.wait(1)
-
+            self.event.wait(1)
+    
         def stop(self):
-            self.event.set()
-
+        self.event.set()
+    
      ```
     性能分析：  
-    对于每秒新起的线程，若要取消10笔订单约0.3s左右(时间多花在数据库访问延迟)，对小量数据能尽量保证当前时间后1s内能取消完当前时间1分钟前的订单，这样保证最多只有60个线程（至少一个）在运作。
-
+对于每秒新起的线程，若要取消10笔订单约0.3s左右(时间多花在数据库访问延迟)，对小量数据能尽量保证当前时间后1s内能取消完当前时间1分钟前的订单，这样保证最多只有60个线程（至少一个）在运作。
+    
 17. 搜索  
     提供的所有操作如下：
       ![image-20191231205258264](Bookstore.assets/image-20191231205258264.png)
@@ -643,3 +646,4 @@ WZY：基本功能实现，拓展功能中卖家发货、买家收货、查询�
 注：若有ppt等需求，或代码问题，可在[issue](https://github.com/1012598167/bookstore/issues)中提出或联系chennuo909@163.com
 原始作业要求https://github.com/DaSE-DBMS/bookstore.git
 
+如果您看到了这里希望您给个star！
