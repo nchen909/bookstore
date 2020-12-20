@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)[![codecov](https://codecov.io/gh/1012598167/bookstore/branch/master/graph/badge.svg?token=8T1NB3GUYR)](https://codecov.io/gh/1012598167/bookstore)
 
-Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，流程可参考.travis.yml
+Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，CI-> .travis.yml
 
 演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
 
@@ -15,7 +15,7 @@ Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试�
 
 ## 安装配置
 
-**运行该项目的流程及安装详情请见.travis.yml**
+**运行该项目的流程及安装可参考CI .travis.yml**
 
 安装python (需要python3.6以上)
 
@@ -76,7 +76,6 @@ hj6q
 ```
 bookstore
   |-- be                            mock的后端
-        |-- model                   store应在model2中
         |-- model2                  功能实现
         |-- view                    flask view
         |-- templates               演示用前端
