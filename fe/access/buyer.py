@@ -81,7 +81,7 @@ class Buyer:
         r = requests.post(url, headers=headers, json=json)
         response_json = r.json()
         import time
-        time.sleep(121)#若没有说明在1s内处理完
+        time.sleep(161)#若没有说明在1s内处理完 #设大一点好跑travis
         return Buyer_().auto_cancel([response_json.get("order_id")])
 
 

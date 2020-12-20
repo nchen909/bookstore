@@ -105,7 +105,10 @@ bookstore
 ## 第一部分——数据库设计
 
 ### ER图
-![avatar](./picture/ER.png)
+
+
+
+![avatar](https://pic.mathskiller909.com/img/20201220161213.png?x-oss-process=style/mathskiller)
 
 1. 实体类和子类  
     实体类：用户、商铺、订单和书籍。  
@@ -208,7 +211,7 @@ bookstore
 3. 分页查询  
     最后统计下来在4万余本书中，标签是小说的有11799本，如果全部返回给用户对于数据库来说会是巨大的开销，因此需要分页查询。我们希望通过分页查询能够**减少数据库与程序之间IO的负担**，因此一次返回十条记录；也能够**减少数据库查询的负担**，因此我们新增了一个额外的属性search_id，使用查询内容和search_id组成联合主键，而不是简单的搜索内容和book_id构成全码。  
     **search_id的作用**：  
-    ![avatar](./picture/search_tags.png)  
+    ![avatar](https://pic.mathskiller909.com/img/20201220161234.png?x-oss-process=style/mathskiller)  
     我们对相同的搜索内容从0开始排序，search_id记录的就是序号，就如上图所示。由于我们每次返回十条结果，将tags和search_id作为主键，检索速度非常快。这里要说明主键数据库会自动构建索引，索引是以B树的方式存在的，复合索引的列的顺序决定了B树的信息的存储的顺序。search_id是为范围查询服务的，因此tags第一列，search_id第二列。可以想象如果颠倒次序对于检索的效率会有很大影响。同时search_id的存在也不仅仅提高检索效率，因为它决定了排序的先后，这是非常有商业价值的，我们可以根据书本的销量、热度来决定search_id的先后，来改进客户体验。  
     优点：  
     对比limit和offset，虽然通过limit和offset也可以实现分页视图，但这样会扫描大量不必要的行。例如limit10000,20的意思扫描满足条件的10020行，扔掉前面的10000行，返回最后的20行，这大大增加了数据库的检索量，但检索的大部分结果都是无用的。  
@@ -396,7 +399,7 @@ import time
     
 17. 搜索  
     提供的所有操作如下：
-      ![image-20191231205258264](Bookstore.assets/image-20191231205258264.png)
+      ![image-20191231205258264](https://pic.mathskiller909.com/img/20201220161257.png?x-oss-process=style/mathskiller)
 
     全局搜索
     1. 根据作家搜索
@@ -455,33 +458,33 @@ import time
 bash script/test.sh
 ```
 在实现功能前我们先针对我们要完成的功能编写相应的test case，之后再进行功能的实现，**符合测试驱动开发的方法**，最后所有测试全部通过，符合我们的预期。
-![avatar](./picture/test.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161304.png?x-oss-process=style/mathskiller)
 代码覆盖率达到91%，在如此大的项目中是一个比较高的覆盖率了，而且核心组件buyer.py、seller.py和user.py的覆盖率均大于等于91%。
-![avatar](./picture/converge.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161309.png?x-oss-process=style/mathskiller)
 
 ### 订单吞吐量和延迟
 小表吞吐量：
-![avatar](./picture/Small.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161313.png?x-oss-process=style/mathskiller)
 延迟：0.0487秒/笔  
 吞吐量：10笔/秒
 
 大表吞吐量：
-![avatar](./picture/Large.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161317.png?x-oss-process=style/mathskiller)
 延迟：0.0497秒/笔  
 吞吐量：11笔/秒  
 测试平台：MacBook Pro 2018
 
 分离负载生成和后端：
-![avatar](./picture/Large_separate.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161322.png?x-oss-process=style/mathskiller)
 延迟：0.0864秒/笔  
 吞吐量：5笔/秒  
 测试平台：远程连接实验室计算机
 
 吞吐量修改：  
 处理5万笔订单用时在5分钟以内，如果是这个吞吐量不可能在5分钟之内完成，而且吞吐量并不是逐渐上升到饱和的趋势，始终保持不变。查看代码我们发现吞吐量计算时没有考虑到并发数，正确计算方法应该为：创建订单数量/(创建订单用时/并发数)，更改后在实验室计算机分离负载生成和后端运行结果如下：
-![avatar](./picture/Large_separate2.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161327.png?x-oss-process=style/mathskiller)
 吞吐量逐渐增长至3600笔/秒左右，这个吞吐量比较符合我们的预期，同一秒内两个ok的差值和现在测得的吞吐量十分接近，证明我们的修改比较合理。
-![avatar](./picture/Large2.png)
+![avatar](https://pic.mathskiller909.com/img/20201220161331.png?x-oss-process=style/mathskiller)
 在MacBook Pro 2018平台上我们得到了更好的性能，最后吞吐量接近9000笔/秒，在我们看来这是一个非常不错的结果了^_^。
 
 ## 第三部分——版本控制、分离负载与前端部署
@@ -492,19 +495,19 @@ bash script/test.sh
 
 我们试用了 Orgnizations，在github.com/1012598167下建仓库并添加合作作者直接clone我们的项目，以及fork到另两位组员的仓库并向该仓库发起pull request请求三种方式，最终采用第二种三者地位都平等的方式。
 
-![image-20191214224431689](Bookstore.assets/image-20191214224431689.png)
+![image-20191214224431689](https://pic.mathskiller909.com/img/20201220161337.png?x-oss-process=style/mathskiller)
 
-![image-20191214224628115](Bookstore.assets/image-20191214224628115.png)
+![image-20191214224628115](https://pic.mathskiller909.com/img/20201220161342.png?x-oss-process=style/mathskiller)
 
 理由是使用第二种方法可以避免发起pull request再手动通过的方式，实现多人快速平等合作。（可以直接clone github.com/1012598167，并可以直接push）（远程可以建不同分支实现不同功能）
 
-![image-20191215123707874](Bookstore.assets/image-20191215123707874.png)
+![image-20191215123707874](https://pic.mathskiller909.com/img/20201220161349.png?x-oss-process=style/mathskiller)
 
 并及时pull request至master分支。
 
 若有更新，成员确保及时fetch并merge -s ours origin/master到本地（每人的pycharm配置文件不同），成员自己本地会维护多个分支，以防本地编写错误的急救以及各功能的控制。
 
-![image-20191214225745199](Bookstore.assets/image-20191214225745199.png)
+![image-20191214225745199](https://pic.mathskiller909.com/img/20201220161353.png?x-oss-process=style/mathskiller)
 
 具体使用如下：
 
@@ -516,7 +519,7 @@ bash script/test.sh
 
   个人提交：git push，并及时pull request至master，而每次写自己部分的代码时及时拉取至本地。先使用git fetch origin master，至origin/master,再get merge并进行检查，以确保每人编写代码时代码内容都为最新。
 
-![image-20191214231256923](Bookstore.assets/image-20191214231256923.png)
+![image-20191214231256923](https://pic.mathskiller909.com/img/20201220161401.png?x-oss-process=style/mathskiller)
 
 远程两个主要分支，master分支用于所有后端，可以通过测试，developercn分支用于前端，连接云服务器的数据库，延时相对较大（但是前端访问延迟高只是因为浏览器没有缓存，个人测所有网页跳转几乎无延迟），其由于使用的0.0.0.0，故本地和利用远程ip都能访问，甚至windows本地也可作为反向代理需要用的一台服务器。上交的两份代码分别为master的功能及developercn的功能。
 
@@ -542,53 +545,53 @@ bash script/test.sh
 
 （jquery保证以下所有功能都用户只有输入内容才能点击执行）
 
-![image-20191231211031007](Bookstore.assets/image-20191231211031007.png)
+![image-20191231211031007](https://pic.mathskiller909.com/img/20201220161414.png?x-oss-process=style/mathskiller)
 
 自动跳转界面：
 
-![image-20191231211412766](Bookstore.assets/image-20191231211412766.png)
+![image-20191231211412766](https://pic.mathskiller909.com/img/20201220161419.png?x-oss-process=style/mathskiller)
 
 买家操作：
 
 其中输入将经过格式化，支持一个订单一行输入。(上方Previous和Next可用于切换所有操作界面)
 
-![image-20191231211436595](Bookstore.assets/image-20191231211436595.png)
+![image-20191231211436595](https://pic.mathskiller909.com/img/20201220161424.png?x-oss-process=style/mathskiller)
 
 输出结果位于
 
-![image-20191231211831499](Bookstore.assets/image-20191231211831499.png)
+![image-20191231211831499](https://pic.mathskiller909.com/img/20201220161429.png?x-oss-process=style/mathskiller)
 
 
 
 卖家操作：
 
-![image-20191231211754693](Bookstore.assets/image-20191231211754693.png)
+![image-20191231211754693](https://pic.mathskiller909.com/img/20201220161433.png?x-oss-process=style/mathskiller)
 
 权限操作：
 
-![image-20191231211935586](Bookstore.assets/image-20191231211935586.png)
+![image-20191231211935586](https://pic.mathskiller909.com/img/20201220161438.png?x-oss-process=style/mathskiller)
 
 搜索图片操作:
 
-![image-20191231212255103](Bookstore.assets/image-20191231212255103.png)
+![image-20191231212255103](https://pic.mathskiller909.com/img/20201220161444.png?x-oss-process=style/mathskiller)
 
-![image-20191231212234052](Bookstore.assets/image-20191231212234052.png)
+![image-20191231212234052](https://pic.mathskiller909.com/img/20201220161455.png?x-oss-process=style/mathskiller)
 
 搜索信息操作：
 
-![image-20191231212107428](Bookstore.assets/image-20191231212107428.png)
+![image-20191231212107428](https://pic.mathskiller909.com/img/20201220161459.png?x-oss-process=style/mathskiller)
 
-![image-20191231212330271](Bookstore.assets/image-20191231212330271.png)
+![image-20191231212330271](https://pic.mathskiller909.com/img/20201220161503.png?x-oss-process=style/mathskiller)
 
 以上图片是使用字符串生成的html（一个字符一个字符打印）。
 
 如果未找到图片，结果如下：
 
-![image-20191231212507386](Bookstore.assets/image-20191231212507386.png)
+![image-20191231212507386](https://pic.mathskiller909.com/img/20201220161507.png?x-oss-process=style/mathskiller)
 
 用户还能直接点击title查看该书有哪些商家正在售卖。
 
-![image-20191231212801400](Bookstore.assets/image-20191231212801400.png)
+![image-20191231212801400](https://pic.mathskiller909.com/img/20201220161512.png?x-oss-process=style/mathskiller)
 
 ### 反向代理分离负载及nginx重定向
 
@@ -598,11 +601,11 @@ bash script/test.sh
 
 ### 一些小问题
 
-![image-20191231181542707](Bookstore.assets/image-20191231181542707.png)
+![image-20191231181542707](https://pic.mathskiller909.com/img/20201220161519.png?x-oss-process=style/mathskiller)
 
-![image-20191231155239921](Bookstore.assets/image-20191231181514818.png)
+![image-20191231155239921](https://pic.mathskiller909.com/img/20201220161523.png?x-oss-process=style/mathskiller)
 
-![image-20191231175630974](Bookstore.assets/image-20191231175630974.png)
+![image-20191231175630974](https://pic.mathskiller909.com/img/20201220161527.png?x-oss-process=style/mathskiller)
 
 pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示一个系统进程，显示与当前会话的活动进程的一些信息，比如当前会话的状态和查询等。它的state字段表示当前进程的状态，一共有六种：
 1. Active(活动): 进程正在执行某个语句
@@ -615,11 +618,11 @@ pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示�
 
 对于处理idle in transaction,可以设置timeout=500s到时就释放
 
-![image-20191231190043606](Bookstore.assets/image-20191231190043606.png)
+![image-20191231190043606](https://pic.mathskiller909.com/img/20201220161534.png?x-oss-process=style/mathskiller)
 
 对于idle，可以将max_connection设至10000，保证不会连不上。
 
-![image-20191231190219138](Bookstore.assets/image-20191231190219138.png)
+![image-20191231190219138](https://pic.mathskiller909.com/img/20201220161537.png?x-oss-process=style/mathskiller)
 
 重启服务使之生效。
 
@@ -630,7 +633,7 @@ pg_stat_activity 是一张postgresql的系统视图，它的每一行都表示�
 使用superset可视化分析数据，以备未来需对真实数据进行数据分析。
 
 以下为book表中tags生成的词云：
-![image-20191231213451774](Bookstore.assets/image-20191231213451774.jpg)
+![image-20191231213451774](https://pic.mathskiller909.com/img/20201220161541.jpg?x-oss-process=style/mathskiller)
 
 ## 链接
 
