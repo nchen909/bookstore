@@ -1,6 +1,6 @@
 # Bookstore Postgres数据库项目
 
-[![Build Status](https://travis-ci.com/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)
+[![Build Status](https://travis-ci.com/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)[![codecov](https://codecov.io/gh/1012598167/bookstore/branch/master/graph/badge.svg?token=8T1NB3GUYR)](https://codecov.io/gh/1012598167/bookstore)
 
 Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，流程可参考.travis.yml
 
@@ -76,8 +76,8 @@ hj6q
 ```
 bookstore
   |-- be                            mock的后端
-        |-- model                   功能1-14实现
-        |-- model2                  功能15-18实现
+        |-- model                   store应在model2中
+        |-- model2                  功能实现
         |-- view                    flask view
         |-- templates               演示用前端
         |-- app.py                  启动flask
