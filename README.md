@@ -74,22 +74,30 @@ hj6q
 ```
 bookstore
   |-- be                            mock的后端
-        |-- model
-        |-- model2 搜索以图搜图取消订单功能
-        |-- view
+        |-- model                   功能1-14实现
+        |-- model2                  功能15-18实现
+        |-- view                    flask view
+        |-- templates               演示用前端
+        |-- app.py                  启动flask
         |-- ....
   |-- doc                           JSON API
   |-- fe                            前端代码
-        |-- access
-        |-- bench                   效率测试
+        |-- access                  各功能http访问
+        |-- bench                   效率(吞吐量)测试
         |-- data                    
             |-- book.db             sqlite 数据库(book.db，较少量的测试数据)
             |-- book_lx.db          sqlite 数据库(book_lx.db， 较大量的测试数据，要从网盘下载)
             |-- scraper.py          从豆瓣爬取的图书信息数据
-        |-- test                    功能性测试（不要修改这里的文件，可以提pull request或bug）
+        |-- test                    功能性及覆盖率测试
         |-- conf.py                 测试参数，修改这个文件以适应自己的需要
         |-- conftest.py             pytest初始化配置，修改这个文件以适应自己的需要
         |-- ....
+ |-- htmlcov                        
+ |-- initialize_database            
+ |-- picture                        
+ |-- script
+ |-- test_tesult
+ |-- 可根据自己需要增加conf.py以连接自己的数据库
   |-- ....
 ```
 
