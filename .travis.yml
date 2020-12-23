@@ -15,8 +15,6 @@ services:
   - postgresql
 #addons:
 #  postgresql: "9.6"
-#before_script:
-#  - bash install-postgres-10.sh
 
 before_script:
   - psql -c 'create database bookstore;' -U postgres

@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/1012598167/bookstore.svg?branch=master)](https://travis-ci.org/1012598167/bookstore)[![codecov](https://codecov.io/gh/1012598167/bookstore/branch/master/graph/badge.svg?token=8T1NB3GUYR)](https://codecov.io/gh/1012598167/bookstore)
 
+
 Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，CI-> .travis.yml
 
 演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
@@ -15,9 +16,7 @@ Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试�
 
 ## 安装配置
 
-**运行该项目的流程及安装可参考CI .travis.yml**
-
-安装python (需要python3.6以上)
+安装python (>=3.6)
 
 安装依赖
 
@@ -29,6 +28,14 @@ pip install -r requirements.txt
 
 ```bash
 bash script/test.sh
+```
+
+初始化数据库(python>=3.6)
+
+```bash
+python ./initialize_database/initialize_books.py
+python ./initialize_database/initialize_database.py
+python ./initialize_database/initialize_search_database.py
 ```
 
 bookstore/fe/data/book.db中包含测试的数据，从豆瓣网抓取的图书信息， 其DDL为：
@@ -69,6 +76,75 @@ hj6q
 ```
 
 这份数据同bookstore/fe/data/book.db的schema相同，但是有更多的数据(约3.5GB, 40000+行)
+
+## docker
+
+你也可以使用docker免去配置：
+
+**拉取镜像**
+
+```bash
+docker pull mathskiller/bookstore:latest
+```
+
+**镜像2容器**
+
+```bash
+docker run --name bookstore -itd --restart always --env 'PG_PASSdockdoWORD=' mathskiller/bookstore
+```
+
+你可以加上
+
+```bash
+-p 5000:5001 -p 5432:5432
+```
+
+将容器的flask与postgresql端口映射至本地端口
+
+```bash
+--env 'PG_PASSWORD='
+```
+
+设置postgres数据库密码(默认空，否则需要修改代码)
+
+```bash
+-v ${PWD}/pg-data:/var/lib/postgresql/data
+```
+
+将data位置与本地位置映射
+
+如
+
+```bash
+docker run --name bookstore -p 5000:5001 -p 5432:5432 -itd --restart always --env 'PG_PASSWORD=' -v ${PWD}/pg-data:/var/lib/postgresql/data mathskiller/bookstore
+```
+
+**启动容器**
+
+```bash
+docker exec -it {containerid} /bin/bash
+```
+
+将{containerid}替换为你的容器id
+
+注:容器中的python为python3，pip为pip3
+
+**启动后运行**
+
+```bash
+passwd#修改root密码
+su - postgres#进入postgres用户
+psql -c "create database bookstore;" -U postgres#创建bookstore空数据库
+su#返回root
+python3 /home/bookstore/initialize_database/initialize_books.py
+python3 /home/bookstore/initialize_database/initialize_database.py
+python3 /home/bookstore/initialize_database/initialize_search_database.py
+#初始化数据库
+coverage run --timid --branch --source fe,be --concurrency=thread -m pytest -v --ignore=fe/data
+coverage combine
+coverage report
+#测试覆盖率
+```
 
 
 ## 项目目录结构
@@ -525,9 +601,9 @@ bash script/test.sh
 
 ### 分离负载
 
-连接印张悦本地计算机的数据库，或是云服务器数据库（位于磁盘）。
+连接YZY本地计算机的数据库，或是云服务器数据库（位于磁盘）。
 
-代码运行在王子玥或陈诺的电脑，而访问请求任何人都可以通过(http://[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5000/auth/search_all)访问印张悦的数据库或是通过(http://47.101.151.73:5001/auth/login或https://noname.asia)访问云端的数据库。
+代码运行在WZY或CN的电脑，而访问请求任何人都可以通过(http://[2001:da8:8005:4056:81e9:7f6c:6d05:fe47]:5000/auth/search_all)访问YZY的数据库或是通过(http://47.101.151.73:5001/auth/login)访问云端的数据库。
 
 ### 前端与云端部署
 

@@ -299,4 +299,4 @@ if __name__ == "__main__":
     insert_title()
     insert_book_intro()
     end = datetime.datetime.now()
-    print("耗时{}秒".format((end - start).seconds))
+    print("spend {} sec".format((end - start).seconds))

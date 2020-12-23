@@ -1,0 +1,2 @@
+CREATE USER postgres WITH PASSWORD '';
+CREATE DATABASE bookstore;
