@@ -5,7 +5,7 @@
 
 Postgres实现类似淘宝书店的功能并进行50000笔订单吞吐量测试，CI-> .travis.yml
 
-演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) 
+演示页[47.101.151.73:5001/auth/login](http://47.101.151.73:5001/auth/login) (updated 20201224)
 
 注：主分支未加入前端(updated 20201219)
 
