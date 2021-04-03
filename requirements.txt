@@ -11,6 +11,6 @@ flask==1.1.2
 requests==2.25.0
 psycopg2==2.8.4
 jieba==0.39
-lxml==4.6.3
+lxml==4.6.2
 coverage==4.5.4
 pyjwt==1.7.1
