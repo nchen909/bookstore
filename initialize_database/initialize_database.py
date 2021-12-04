@@ -5,9 +5,8 @@ from sqlalchemy.orm import sessionmaker
 
 import psycopg2
 from datetime import datetime,time
-import sys
-sys.path.append('..')
-from bookstore.config import Conf
+print("#if you meet Conf error,please change 'from config import Conf' to following 'import sys    sys.path.append('..')    from bookstore.config import Conf")
+from config import Conf
 # 连接数据库legend 记得修改这个！！！
 #engine = create_engine(Conf.get_sql_conf('local_w'))
 engine = create_engine(Conf.get_sql_conf('local_y'))
