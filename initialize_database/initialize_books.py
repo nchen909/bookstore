@@ -39,9 +39,13 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import psycopg2
 from datetime import datetime,time
-import sys
-sys.path.append('..')
-from bookstore.config import Conf
+print("#if you meet Conf error,please change 'from config import Conf' to following 'import sys    sys.path.append('..')    from bookstore.config import Conf")
+from config import Conf
+#if you meet Conf error,please change 'from config import Conf' to following
+#import sys
+#sys.path.append('..')
+#from bookstore.config import Conf
+
 # import enum
 # class MyEnum(enum.Enum):
 #     thelist=[]
