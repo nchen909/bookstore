@@ -30,7 +30,7 @@ pip install -r requirements.txt
 bash script/test.sh
 ```
 
-初始化数据库(python>=3.6)
+(先在本地创建bookstore数据库!)初始化数据库(python>=3.6)
 
 ```bash
 python ./initialize_database/initialize_books.py
