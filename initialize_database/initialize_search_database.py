@@ -3,9 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, PrimaryKeyConstraint, Text, DateTime, Boolean, LargeBinary
 from sqlalchemy.orm import sessionmaker
-import sys
-sys.path.append('..')
-from bookstore.config import Conf
+print("#if you meet Conf error,please change 'from config import Conf' to following 'import sys    sys.path.append('..')    from bookstore.config import Conf")
+from config import Conf
 import psycopg2
 from datetime import datetime, time
 
