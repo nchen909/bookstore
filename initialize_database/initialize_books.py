@@ -39,7 +39,9 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import psycopg2
 from datetime import datetime,time
-from config import Conf
+import sys
+sys.path.append('..')
+from bookstore.config import Conf
 # import enum
 # class MyEnum(enum.Enum):
 #     thelist=[]
